@@ -4,7 +4,7 @@ class ComparerInator{
 public:
 	int makeProgram(vector<int> A, vector<int> B, vector<int> wanted){
 		int n = A.size();
-		int a,b,c,=1;
+		int flag=1;
 		for(int i=0; i<n; i++){
 			if(wanted[i] != A[i]){
 				flag=2;
