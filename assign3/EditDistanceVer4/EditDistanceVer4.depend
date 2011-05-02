@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1303121250 source:c:\documents and settings\mani\desktop\dp\editdistancever4\main.cpp
+	<cstring>
+	<iostream>
+
