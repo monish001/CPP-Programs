@@ -75,6 +75,25 @@ public:
         return name;
     }
 };
+/*
+bool dfs(vertex root, vertex_to_find)
+    set search_status = false
+	set color for each vertex = WHITE and distance=INFINITY
+	set root.color = GRAY, root.distance = 0 and root.predecessor = NULL
+    declare stack stk
+    stk.push(root)
+    while stk is NOT empty
+        vertex temp = stk.pop()
+        for each vertex i adjacent to temp
+            if i.color = WHITE
+                i.color = GRAY, i.predecessor = temp, and i.dist = temp.dist + 1
+                stk.push(i)
+        temp.color = BLACK
+        print temp.getName()
+        if(search_status==false && temp.getName() == vertex_to_find)
+            search_status=true;
+    return search_status;
+*/
 bool dfs(vertex &root, char key){
     bool flag = false;
     root.color = GRAY;

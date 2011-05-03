@@ -76,7 +76,26 @@ public:
         return name;
     }
 };
-bool bfs(vertex &root, char key){
+/*
+bool bfs(vertex root, vertex_to_find)
+    set search_status = false
+	set color for each vertex = WHITE and distance=INFINITY
+	set root.color = GRAY, root.distance = 0 and root.predecessor = NULL
+    declare queue Q
+    Q.push(root)
+    while Q is NOT empty
+        vertex temp = Q.pop()
+        for each vertex i adjacent to temp
+            if i.color = WHITE
+                i.color = GRAY, i.predecessor = temp, and i.dist = temp.dist + 1
+                Q.push(i)
+        temp.color = BLACK
+        print temp.getName()
+        if(search_status==false && temp.getName() == vertex_to_find)
+            search_status=true;
+    return search_status;
+*/
+bool bfs(vertex &root, char item_to_search){
     bool flag = false;
     root.color = GRAY;
     root.distance = 0;
@@ -97,7 +116,7 @@ bool bfs(vertex &root, char key){
         }
         temp->color = BLACK;
         cout<<temp->getName();
-        if(flag==false && temp->getName() == key)
+        if(flag==false && temp->getName() == item_to_search)
             flag=true;
     }
     return flag;
