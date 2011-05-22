@@ -1,2 +1,0 @@
-Case #1: banana banana
-Case #2: potato
