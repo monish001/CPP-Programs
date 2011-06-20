@@ -1,25 +1,49 @@
 //MatrixRotate90.cpp
 #include<iostream>
-using namespace std;
 
-char a[3][3] = {'b', 'i', 'g', 'c', 'a', 't', 'f', 'u', 'n'};
+void swapi(char &a, char&b){
+    char tmp = a;
+    a=b;
+    b=tmp;
+}
 
-void print(){
-    for(int i=0; i<3; i++){
-        for(int j=0; j<3; j++){
-            cout<<a[i][j];
+void print(char** a, int n){
+    for(int i=0; i<n; i++){
+        for(int j=0; j<n; j++){
+            std::cout<<a[i][j];
         }
-        cout<<"\n";
+        std::cout<<"\n";
     }
 }
 
-void rotate(){
-    for i = 0 to n/2
+void rotate(char** a, int n){
+    for(int i=0; i<n/2; i++){
+        int up=i, down=n-1-i;
+
+        //shift corners
+        swapi(a[up][up], a[up][down]);
+        swapi(a[up][up], a[down][up]);
+        swapi(a[down][up], a[down][down]);
+
+        //shift edges
+        for(int j=1; j<n-1; j++){
+            swapi(a[up][up+j], a[up+j][down]);
+            swapi(a[up][up+j], a[down-j][up]);
+            swapi(a[down-j][up], a[down][down-j]);
+        }
+    }
 }
 
 int main(){
-    print();
-    rotate();
-    print();
+    int n=3;
+    char**a = new char*[n];
+    for(int i=0; i<n; i++){
+        a[i] = new char[n];
+        for(int j=0; j<n; j++)            a[i][j] = 'a'+ 3*i + j;
+    }
+//    a[0] = "big"; a[1]="fat";   a[2]="cat";
+    print(a, n);
+    rotate(a,n);
+    print(a,n);
     return 0;
 }
