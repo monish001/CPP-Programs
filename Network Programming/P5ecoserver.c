@@ -1,3 +1,4 @@
+//Echo server program using non-blocking IO
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -44,19 +45,24 @@ int main(int argc, char *argv[])
 //STEP4 listen function
     listen(sockfd,10);
 	
-//STEP5 accept and serve clients one by one in iterative fashion
 	while(1){
+//STEP5 accept client connection
 		clilen = sizeof(cli_addr);
 		newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
-		 if (newsockfd < 0) error("ERROR on accept");
-		 bzero(buffer,256);
-		 while(	 (n=read(newsockfd,buffer,255)) > 0  ){
-		 if (n < 0) error("ERROR reading from socket");
-		 n = write(newsockfd,buffer,n);
-		 if (n < 0) error("ERROR writing to socket");
-		 bzero(buffer,256);
-		 }
-		 close(newsockfd);
+		if (newsockfd < 0) error("ERROR on accept OR Connection terminated by client");
+		if(fork() != 0){
+			close(newsockfd);
+		}else{
+			close(sockfd);
+			bzero(buffer,256);
+			while(	 (n=read(newsockfd,buffer,255)) > 0  ){
+				if (n < 0) error("ERROR reading from socket");
+				n = write(newsockfd,buffer,n);
+				if (n < 0) error("ERROR writing to socket");
+				bzero(buffer,256);
+			}
+			close(newsockfd);
+		}
 	}
      close(sockfd);
      return 0; 

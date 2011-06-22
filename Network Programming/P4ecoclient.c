@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
     int sockfd, n;
     struct sockaddr_in serv_addr;
     struct hostent *server;
-
+    char temp[5] = "exit";
     char buffer[256];
     if (argc < 3) {
        fprintf(stderr,"usage %s hostname port\n", argv[0]);
@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
     while(1){
 		bzero(buffer,256);
 		fgets(buffer,255,stdin);//read from client stdin
-		if((n=bcmp("exit",buffer,strlen(buffer))==0)){ close(sockfd); return 0; }    
+		if(bcmp(temp,buffer, 4)==0){ close(sockfd); return 0; }    
 		n = write(sockfd,buffer,strlen(buffer));//write to server
 		if (n < 0) error("ERROR writing to socket");
 		bzero(buffer,256);
