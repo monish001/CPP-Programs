@@ -50,9 +50,7 @@ int main(int argc, char *argv[])
 		clilen = sizeof(cli_addr);
 		newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
 		if (newsockfd < 0) error("ERROR on accept OR Connection terminated by client");
-		if(fork() != 0){
-			close(newsockfd);
-		}else{
+		if(fork() == 0){
 			close(sockfd);
 			bzero(buffer,256);
 			while(	 (n=read(newsockfd,buffer,255)) > 0  ){
