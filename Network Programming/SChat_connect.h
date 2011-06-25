@@ -84,10 +84,11 @@ int connectClients(int fd, int new_fd){//both fds are already registered. Return
 	int new_fd_ind = isRegistered(new_fd);
 	int res = 0, n;
 	if(con_ar[fd_ind][new_fd_ind] == 0){
-		char buff[100];
+		char buff[100]; bzero(buff,100);
 		sprintf(buff, "Allow %d to chat y/n?", fd);
 		n=write(new_fd, buff, strlen(buff));
 		if(n<0)	Error("In connectClients: ");
+		bzero(buff,100);
 		n=read(new_fd, buff, 99);
 		if(n<0) Error("In connectClients: ");
 		else if(n==0){
@@ -97,7 +98,7 @@ int connectClients(int fd, int new_fd){//both fds are already registered. Return
 	}
 	if(res == 1){
 		con_ar[fd_ind][new_fd_ind] = 1;
-		con_ar[fd_ind][new_fd_ind] = 1;
+		con_ar[new_fd_ind][fd_ind] = 1;
 	}
 	return res;
 }
@@ -119,6 +120,12 @@ void communicate(int fd, char* msg){//sends msg to all connected to fd
 //returns 0 if fd is not connected to anyone yet.
 int isConnected(int fd){
 	printf("In isConnected\n");
+	int i, index = isRegistered(fd);
+	for(i=0; i<con_num; i++){
+		if(i==index)	continue;
+		if(con_ar[i][index] == 1) return 1;
+	}
+	return 0;
 }
 
 //disconnects fd if connected to any.

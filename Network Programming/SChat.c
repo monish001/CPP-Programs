@@ -37,6 +37,7 @@ printf("Registered fds: ");
 getRegisteredList();
 	char buff[100], temp[100];
 	int status=0, rd=0, wr=0;
+	bzero(buff,100);
 	rd = read(fd, buff, 99);
 	if(rd == 0){
 		clean(fd);
