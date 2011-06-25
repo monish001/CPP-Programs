@@ -6,11 +6,9 @@
 #include <sys/types.h> 
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include "SChat_register.h"
 #define BACKLOG 1023
-void Error(const char *msg){
-    perror(msg);
-    exit(1);
-}
+
 int createServerSocket(int port){
 	int listenfd;
 	struct sockaddr_in servaddr;
@@ -33,6 +31,50 @@ int createServerSocket(int port){
 	
 	return listenfd;
 }
+int serve(int fd){
+printf("\nIn serve\n");
+	int regisIndex = isRegistered(fd);
+printf("Registered fds: ");
+getRegisteredList();
+	char buff[100];
+	int status=0, rd=0, wr=0;
+	if(regisIndex == -1){//if not registered
+printf("Gonna register now\n");
+		char temp[100];
+		rd = read(fd, buff, 99);
+		if(rd == 0){
+			printf("Closing connection");
+			return status;
+		}
+		if(rd < 0)
+			Error("read error in serve: ");
+		sscanf(buff, "%s", temp);
+		if(strcmp((temp), "register") != 0){
+			printf("Closing connection");
+			return status;
+		}
+		registerMe(fd);
+printf("Registered\n");
+		sprintf(buff, "You are now registered with registration id = %d\n", fd);
+		wr = write(fd, buff, strlen(buff));
+		if(wr < 0)
+			Error("write error in serve: ");
+		return status=1;
+	}else{
+printf("Already registered\n");
+		rd = read(fd, buff, 99);
+		if(rd == 0)
+			return status;
+		if(rd < 0)
+			Error("read error in serve: ");
+		sprintf(buff, "Please connect to chat\n", fd);
+		wr = write(fd, buff, strlen(buff));
+		if(wr < 0)
+			Error("write error in serve: ");
+		return status=1;
+	}
+}
+
 int main(int argc, char** argv){
 	int port, listenfd, nfds, temp_fd;
 	fd_set temp_fds, rfds;
@@ -46,7 +88,7 @@ int main(int argc, char** argv){
 	nfds = getdtablesize();
 	FD_ZERO(&temp_fds);
 	FD_SET(listenfd, &temp_fds);
-
+	init();
 	while(1){
 		memcpy(&rfds, &temp_fds, sizeof(rfds));
 		if(select(nfds, &rfds, (fd_set *)0, (fd_set *)0, (struct timeval *)0) < 0)	Error("select");
