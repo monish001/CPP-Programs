@@ -44,9 +44,11 @@ getRegisteredList();
 		printf("Closing connection");
 		return status;
 	}
-	if(rd < 0)
-		Error("read error in serve: ");
-
+	if(rd < 0){
+		//Error("read error in serve: ");
+		clean(fd);
+		return status;
+	}
 	if(regisIndex == -1){//if not registered
 printf("Gonna register now\n");
 		sscanf(buff, "%s", temp);
@@ -65,12 +67,16 @@ printf("Registered\n");
 	}else{//if registered
 printf("Already registered\n");
 		sscanf(buff, "%s", temp);
-		int conn_req = strcmp(temp, "connect");
-		if(conn_req == 0){//if connect request
+		int disconn_req = strcmp(temp, "disconnect");
+		int conn_req = (isConnected(fd) == 0)?strcmp(temp, "connect"):1;//if not already connected, return 1
+		if(conn_req == 0){//connect request
 			int new_fd;
 			sscanf(buff, "%s %d", temp, &new_fd);
 			if(isRegistered(new_fd) < 0 ){//if new_fd NOT registered
-				sprintf(buff, "No connection is registered with id = %d\n", new_fd);
+				sprintf(buff, "No connection exists registered with id = %d\n", new_fd);
+			}else if(isConnected(new_fd) == 1){//new_fd is already connected
+				requestConn(fd, new_fd);
+				sprintf(buff, "%d is already connected with someone. Your request to chat is sent to %d.\n", new_fd, new_fd);
 			}else if(connectClients(fd, new_fd) == 1){//if connection accepted by new_fd
 				sprintf(buff, "%d now connected with %d\n", fd, new_fd);
 			}else{//if connection refused by new_fd
@@ -81,6 +87,18 @@ printf("Already registered\n");
 			return status=1;
 		}else if(isConnected(fd) == 0){//if not connected to anyone yet
 			sprintf(buff, "Please connect to chat\n", fd);
+			wr = write(fd, buff, strlen(buff));
+			if(wr < 0) Error("write error in serve: ");
+			return status=1;
+		}else if(disconn_req == 0){//if disconn request
+			int new_fd;
+			sscanf(buff, "%s %d", temp, &new_fd);
+			if(isRegistered(new_fd) < 0 ){//if new_fd NOT registered
+				sprintf(buff, "No connection exists registered with id = %d\n", new_fd);
+			}else{//if there is a connection
+				disConnect(fd ,new_fd);
+				sprintf(buff, "You and %d are now DISCONNECTED OR there was no connection.\n", new_fd);
+			}
 			wr = write(fd, buff, strlen(buff));
 			if(wr < 0) Error("write error in serve: ");
 			return status=1;

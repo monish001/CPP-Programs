@@ -27,19 +27,19 @@ void init(){
 }
 
 int registerMe(int fd){
-printf("In registerMe\n");
+printf("registerMe:In registerMe\n");
 	while(reg_lock)
-		printf("reg_lock1 busy\n");
+		printf("registerMe:reg_lock1 busy\n");
 	reg_lock = true;
+	printf("registerMe:reg_lock1 taken\n");
+
 	int retIndex=-1;
 	if(top == maxIndex){
 		ar = realloc(ar, (maxIndex+1)*2 * sizeof(int));
-		if(ar == NULL)
-			Error("realloc error in register");
+		if(ar == NULL) Error("realloc error in register");
 		maxIndex = (maxIndex+1)*2 - 1;
 	}
 	//POS FROM 0 TO top are filled on sorted order already. Use ++top and insert fd.
-	//ar[++top] = fd;
 	int i;
 	for(i=top; i>0; i--){
 		if(ar[i] > fd)
@@ -56,6 +56,7 @@ printf("In registerMe\n");
 	}
 	++top;
 	AddCon_num(retIndex);
+	printf("registerMe:reg_lock1 freed\n");
 	reg_lock = false;
 	return retIndex;
 }
@@ -90,28 +91,26 @@ for(i=0; i<=top; i++){
 	return ans;
 }
 
-void unRegister(int fd){
-	int x = isRegistered(fd);
+void unRegister(int x){//arg is index
 	if(x== -1)
 		return;
-	while(reg_lock) printf("reg_lock2 busy\n");
-	reg_lock = true;
 	int i;
 	for(i=x+1; i<=top; i++){
 		ar[i-1] = ar[i];
 	}	
 	--top;
-	DeleteCon_num(x);
-	reg_lock = false;
 }
 
 void clean(int fd){
-	while(reg_lock) printf("reg_lock3 busy\n");
+	while(reg_lock) printf("clean:reg_lock3 busy\n");
 	reg_lock = true;
-	if(isRegistered(fd) >= 0){
-		unConnect(fd);
-		unRegister(fd);
+	printf("clean:reg_lock3 taken\n");
+	int index;
+	if((index = isRegistered(fd)) >= 0){
+		unConnect(index);
+		unRegister(index);
 	}
+	printf("clean:reg_lock3 freed\n");
 	reg_lock = false;
 }
 
