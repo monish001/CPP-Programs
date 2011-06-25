@@ -1,20 +1,13 @@
-#ifndef SCHAT_REGISTER_C
-#define SCHAT_REGISTER_C
+#ifndef SCHAT_REGISTER_H
+#define SCHAT_REGISTER_H
 //SChat_register.h
-#define true 1
-#define false 0
-#include<stdio.h>
-#include<stdlib.h>
-void Error(const char *msg){
-    perror(msg);
-    exit(1);
-}
+#include "SChat_connect.h"
 
 typedef short bool;
 int* ar;//= (int*) malloc(sizeof(int));
 int maxIndex;// = 0;
 int top;// = -5;
-bool lock;// = false;
+bool reg_lock;// = false;
 
 void getRegisteredList(){
 	int i;
@@ -24,19 +17,20 @@ void getRegisteredList(){
 }
 //call this before using any other function of this library
 void init(){
-	ar = (int*) malloc(sizeof(int));
+	ar = (int*) calloc(1, sizeof(int));
 	if(ar == NULL)
 		Error("malloc error in init");
 	top = -1;
+	con_init();
 	maxIndex = 0;
-	lock = false;
+	reg_lock = false;
 }
 
 int registerMe(int fd){
 printf("In registerMe\n");
-	while(lock)
-		printf("lock busy\n");
-	lock = true;
+	while(reg_lock)
+		printf("reg_lock1 busy\n");
+	reg_lock = true;
 	int retIndex=-1;
 	if(top == maxIndex){
 		ar = realloc(ar, (maxIndex+1)*2 * sizeof(int));
@@ -60,12 +54,17 @@ printf("In registerMe\n");
 		ar[top+1] = fd;
 		retIndex = top+1;
 	}
-	top++;
-	lock = false;
+	++top;
+	AddCon_num(retIndex);
+	reg_lock = false;
 	return retIndex;
 }
 
-int isRegistered(int fd){
+int getFd(int index){
+	return ar[index];
+}
+
+int isRegistered(int fd){//returns -1 if not registered else returns non-negative
 //	test for top =0, =1, =n
 	//search fd in sorted array ar using binary search
 	int ans = -1;
@@ -95,15 +94,31 @@ void unRegister(int fd){
 	int x = isRegistered(fd);
 	if(x== -1)
 		return;
-	while(lock)
-		printf("lock busy\n");
-	lock = true;
+	while(reg_lock) printf("reg_lock2 busy\n");
+	reg_lock = true;
 	int i;
 	for(i=x+1; i<=top; i++){
 		ar[i-1] = ar[i];
 	}	
 	--top;
-	lock = false;
+	DeleteCon_num(x);
+	reg_lock = false;
 }
 
-#endif // SCHAT_REGISTER_C
+void clean(int fd){
+	while(reg_lock) printf("reg_lock3 busy\n");
+	reg_lock = true;
+	if(isRegistered(fd) >= 0){
+		unConnect(fd);
+		unRegister(fd);
+	}
+	reg_lock = false;
+}
+
+//frees dynamic memory
+void freeRegister(){
+	printf("In freeRegister\n");
+	freeConnect();
+	free(ar);
+}
+#endif // SCHAT_REGISTER_H

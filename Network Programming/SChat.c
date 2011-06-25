@@ -1,12 +1,10 @@
 //Server Program
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
 #include <sys/types.h> 
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include "SChat_register.h"
+
 #define BACKLOG 1023
 
 int createServerSocket(int port){
@@ -31,28 +29,31 @@ int createServerSocket(int port){
 	
 	return listenfd;
 }
+
 int serve(int fd){
 printf("\nIn serve\n");
 	int regisIndex = isRegistered(fd);
 printf("Registered fds: ");
 getRegisteredList();
-	char buff[100];
+	char buff[100], temp[100];
 	int status=0, rd=0, wr=0;
+	rd = read(fd, buff, 99);
+	if(rd == 0){
+		clean(fd);
+		printf("Closing connection");
+		return status;
+	}
+	if(rd < 0)
+		Error("read error in serve: ");
+
 	if(regisIndex == -1){//if not registered
 printf("Gonna register now\n");
-		char temp[100];
-		rd = read(fd, buff, 99);
-		if(rd == 0){
-			printf("Closing connection");
-			return status;
-		}
-		if(rd < 0)
-			Error("read error in serve: ");
 		sscanf(buff, "%s", temp);
 		if(strcmp((temp), "register") != 0){
 			printf("Closing connection");
 			return status;
 		}
+		//clean(fd);
 		registerMe(fd);
 printf("Registered\n");
 		sprintf(buff, "You are now registered with registration id = %d\n", fd);
@@ -60,18 +61,31 @@ printf("Registered\n");
 		if(wr < 0)
 			Error("write error in serve: ");
 		return status=1;
-	}else{
+	}else{//if registered
 printf("Already registered\n");
-		rd = read(fd, buff, 99);
-		if(rd == 0)
-			return status;
-		if(rd < 0)
-			Error("read error in serve: ");
-		sprintf(buff, "Please connect to chat\n", fd);
-		wr = write(fd, buff, strlen(buff));
-		if(wr < 0)
-			Error("write error in serve: ");
-		return status=1;
+		sscanf(buff, "%s", temp);
+		int conn_req = strcmp(temp, "connect");
+		if(conn_req == 0){//if connect request
+			int new_fd;
+			sscanf(buff, "%s %d", temp, &new_fd);
+			if(isRegistered(new_fd) < 0 ){//if new_fd NOT registered
+				sprintf(buff, "No connection is registered with id = %d\n", new_fd);
+			}else if(connectClients(fd, new_fd) == 1){//if connection accepted by new_fd
+				sprintf(buff, "%d now connected with %d\n", fd, new_fd);
+			}else{//if connection refused by new_fd
+				sprintf(buff, "Connection refused by %d\n", new_fd);
+			}
+			wr = write(fd, buff, strlen(buff));
+			if(wr < 0) Error("write error in serve: ");
+			return status=1;
+		}else if(isConnected(fd) == 0){//if not connected to anyone yet
+			sprintf(buff, "Please connect to chat\n", fd);
+			wr = write(fd, buff, strlen(buff));
+			if(wr < 0) Error("write error in serve: ");
+			return status=1;
+		}else{//if already connected, send msg
+			communicate(fd, buff);
+		}
 	}
 }
 
@@ -109,5 +123,6 @@ int main(int argc, char** argv){
 		}
 	}
 	close(listenfd);
+	freeRegister();
 	return 0;
 }
