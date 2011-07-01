@@ -33,12 +33,10 @@ public class HTMLCodeDownloader
 			URLConnection conn = url.openConnection();
 			DataInputStream in = new DataInputStream ( conn.getInputStream ( ) ) ;
 			BufferedReader d = new BufferedReader(new InputStreamReader(in));
-			//int i=0;
 			while(d.ready())
 			{
 				//System.out.println(d.readLine());
 				htmlLine.add(d.readLine()+"\n");
-				//i++;
 			}
 			Iterator itr=htmlLine.iterator();
 			while(itr.hasNext())
