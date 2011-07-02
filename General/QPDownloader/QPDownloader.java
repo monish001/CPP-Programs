@@ -37,7 +37,7 @@ class SeasonPage{//Contains info for 1 exam season
 
 			start = matcher2.start()+1;
 			end = matcher2.end()-1;
-			String course_name = input.substring(start, end);
+			String course_name = input.substring(start, end).trim();
 			coursesInfo.add(new CourseInfo(course_name, course_link));
 		}
 	}
@@ -48,9 +48,9 @@ class SeasonPage{//Contains info for 1 exam season
 
 		//initialise coursesInfo
 		String seasonPageHTML = (new DownloadHTML(link)).getHTML();
-		
-		//<A href="http://cl.thapar.edu/qp/EN0105.pdf">EN105</A>
-		String patternString = "http.+pdf\">\\w+</";
+		//http://172.31.19.11/qp/esmay09/BH008.pdf" style="text-decoration: underline;"> BH008</
+		//http://cl.thapar.edu/qp/EN0105.pdf">EN105</
+		String patternString = "http.+pdf\".*>\\s*\\w+\\s*</";
 		Pattern pattern = Pattern.compile(patternString);
 		
 		Matcher matcher = pattern.matcher(seasonPageHTML);
