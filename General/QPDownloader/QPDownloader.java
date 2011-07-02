@@ -1,6 +1,6 @@
 //File: QPDownloader.java
 /*TODO
-1. Try remove "\n" in strbuf.append() call
+1. Try remove "\n" in strbuf.append() call : Why it does not work?
 */
 import java.io.IOException;
 import java.io.BufferedReader;
@@ -15,20 +15,60 @@ import java.util.regex.Matcher;
 import java.util.ArrayList;
 import java.util.Iterator;
 class CourseInfo{
+	CourseInfo(String na, String li){
+		name = (na!=null)?na:"";
+		link = (li!=null)?li:"";
+		System.out.print(name + "\n" + link + "\n");
+	}
 	String link;
 	String name;
 }
-class SeasonPage{
+class SeasonPage{//Contains info for 1 exam season
+	void setCourseInfo(String input){
+		Pattern pattern1 = Pattern.compile("http.*pdf");
+		Matcher matcher1 = pattern1.matcher(input);
+		Pattern pattern2 = Pattern.compile(">.*<");
+		Matcher matcher2 = pattern2.matcher(input);
+		coursesInfo = new ArrayList<CourseInfo>();
+		if(matcher1.find() && matcher2.find()){
+			int start = matcher1.start();
+			int end = matcher1.end();
+			String course_link = input.substring(start, end);
+
+			start = matcher2.start()+1;
+			end = matcher2.end()-1;
+			String course_name = input.substring(start, end);
+			coursesInfo.add(new CourseInfo(course_name, course_link));
+		}
+	}
 	SeasonPage(String na, String li){
-		name = na;
-		link = li;
+		name = (na!=null)?na:"";
+		link = (li!=null)?li:"";
+		System.out.print(name + "\n" + link + "\n");
+
 		//initialise coursesInfo
+		String seasonPageHTML = (new DownloadHTML(link)).getHTML();
+		
+		//<A href="http://cl.thapar.edu/qp/EN0105.pdf">EN105</A>
+		String patternString = "http.+pdf\">\\w+</";
+		Pattern pattern = Pattern.compile(patternString);
+		
+		Matcher matcher = pattern.matcher(seasonPageHTML);
+		
+		while(matcher.find()){
+			int start = matcher.start();
+			int end = matcher.end();
+			String match = seasonPageHTML.substring(start, end);
+			setCourseInfo(match);
+		}
+		System.out.println("========================================================");
+		System.out.println("========================================================");
 	}
 	String link;
 	String name;
 	ArrayList<CourseInfo> coursesInfo;
 }
-public class QPDownloader{
+public class QPDownloader{//downloads links from the html select box and saves each in SeasonPage object
 	QPDownloader(){
 		seasonPagesInfo = new ArrayList<SeasonPage>();
 	}
@@ -71,10 +111,10 @@ public class QPDownloader{
 			int end = matcher.end()-8;
 			String match = input.substring(start, end);
 			//System.out.println(match);
+			//for each page full of pdf links, read pdf link and its name in anchor tag.
 			examSeasons.setExamSeasonInfo(match);
 		}
-		examSeasons.printExamSeasonInfo();
-		//for each page full of pdf links, read pdf link and its name in anchor tag.
+		//examSeasons.printExamSeasonInfo();
 	}
 	ArrayList<SeasonPage> seasonPagesInfo;
 }
