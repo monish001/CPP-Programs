@@ -1,6 +1,6 @@
 //File: QPDownloader.java
 /*TODO
-1. Try remove "\n" in strbuf.append() call : Why it does not work?
+
 */
 import java.io.IOException;
 import java.io.BufferedReader;
@@ -13,6 +13,7 @@ import java.net.URLConnection;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 class CourseInfo{
 	CourseInfo(String na, String li){
@@ -39,6 +40,7 @@ class SeasonPage{//Contains info for 1 exam season
 			end = matcher2.end()-1;
 			String course_name = input.substring(start, end).trim();
 			coursesInfo.add(new CourseInfo(course_name, course_link));
+			courses.add(course_name);
 		}
 	}
 	SeasonPage(String na, String li){
@@ -62,11 +64,11 @@ class SeasonPage{//Contains info for 1 exam season
 			setCourseInfo(match);
 		}
 		System.out.println("========================================================");
-		System.out.println("========================================================");
 	}
 	String link;
 	String name;
 	ArrayList<CourseInfo> coursesInfo;
+	static HashSet<String> courses = new HashSet<String>();
 }
 public class QPDownloader{//downloads links from the html select box and saves each in SeasonPage object
 	QPDownloader(){
@@ -97,6 +99,12 @@ public class QPDownloader{//downloads links from the html select box and saves e
 			System.out.println(s.link);
 			System.out.println("");
 		}
+		/*for(SeasonPage s : seasonPagesInfo)
+		{
+			System.out.println(s.name);
+			System.out.println(s.link);
+			System.out.println("");
+		}*/
 	}
 	public static void main(String[] args){
 		String input = (new DownloadHTML("http://cl.thapar.edu/library_qp.html")).getHTML();
