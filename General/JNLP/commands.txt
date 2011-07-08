@@ -1,0 +1,3 @@
+javac GUI_QPDownloader.java
+
+jar cf TestApp.jar GUI_QPDownloader.class
