@@ -6,6 +6,10 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.table.*;
+import java.util.Vector;
+
+
 
 public class GUI_QPDownloader extends JFrame{
     JButton dl_btn = new JButton("Download Selected");
@@ -13,16 +17,39 @@ public class GUI_QPDownloader extends JFrame{
 	
     public GUI_QPDownloader(String name) {
         super(name);
-        setResizable(false);
+        //setResizable(false);
     }
 
     public void addComponentsToPane(final Container pane) {
-        final JPanel compsToExperiment = new JPanel();
+
+		Object[] columnNames;
+		Object[][] data;
+	
 		QPDownloader qpdown = new QPDownloader();
-		
-        compsToExperiment.add(table = new JTable(SeasonPage.courses.size(), qpdown.seasonPagesInfo.size()));
-		
-		
+		columnNames = new String[qpdown.seasonPagesInfo.size()];
+		int i=-1;
+		for(SeasonPage sp: qpdown.seasonPagesInfo){
+			columnNames[++i] = sp.toString();
+		}
+		//columnNames = 		(qpdown.seasonPagesInfo).toArray(columnNames);
+		System.out.println(SeasonPage.courses.size()+" "+qpdown.seasonPagesInfo.size());
+		data = new String[SeasonPage.courses.size()][qpdown.seasonPagesInfo.size()];
+		int r=-1;
+		for(CourseInfo course: SeasonPage.courses){//for each course or row
+			int c = -1;	++r;
+			//System.out.println(course);
+			for(SeasonPage season: qpdown.seasonPagesInfo){//for each season or col
+				//if course  exits in season.coursesInfo.name then add JCheckBox
+				if(/*season.coursesInfo != null &&*/ (season.coursesInfo).contains(course)){
+					data[r][++c]=course.name;//new Boolean(false);
+				}else
+					data[r][++c]="none";//++c;
+			}
+		}
+
+	
+		table = new JTable(data, columnNames);
+		table.setFillsViewportHeight(true);
 		
 		//controls
         JPanel controls = new JPanel();
@@ -32,17 +59,18 @@ public class GUI_QPDownloader extends JFrame{
             }
         });
         controls.add(dl_btn);
-
-        pane.add(compsToExperiment, BorderLayout.NORTH);
-        pane.add(new JSeparator(), BorderLayout.CENTER);
+		
+		pane.setLayout(new BorderLayout());
+        pane.add(table.getTableHeader(), BorderLayout.PAGE_START);
+        pane.add(new JScrollPane(table), BorderLayout.CENTER);
         pane.add(controls, BorderLayout.SOUTH);
     }
 
 	public static void main(String[] args){
         /* Use an appropriate Look and Feel */
         try {
-            //UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-            UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+            //UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
         } catch (UnsupportedLookAndFeelException ex) {
             ex.printStackTrace();
         } catch (IllegalAccessException ex) {
