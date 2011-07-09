@@ -33,7 +33,7 @@ class CheckBoxRenderer implements TableCellRenderer, ItemListener {
         int state = itemEvent.getStateChange();
         if (state == ItemEvent.SELECTED) {
 			//cb.setSelected(!cb.isSelected());
-			System.out.println("Checkbox change");
+			System.out.println(course + " checkbox change");
         }
 	  }
     
@@ -42,6 +42,7 @@ class CheckBoxRenderer implements TableCellRenderer, ItemListener {
                             boolean isSelected, boolean hasFocus,
                             int row, int column) {
 		cb = (JCheckBox)ob;
+		course = cb.getText();
         if(cb.getText().equals("")){//if label is ""
 			cb.setEnabled(false);
 		}
@@ -49,11 +50,13 @@ class CheckBoxRenderer implements TableCellRenderer, ItemListener {
         return cb;
     }
 	JCheckBox cb;
+	String course;
 }
 
 public class GUI_QPDownloader extends JFrame{
     JButton dl_btn = new JButton("Download Selected");
 	JTable table;
+	QPDownloader qpdown;
 	
     public GUI_QPDownloader(String name) {
         super(name);
@@ -61,7 +64,7 @@ public class GUI_QPDownloader extends JFrame{
     }
 
     public void addComponentsToPane(final Container pane) {
-		final QPDownloader qpdown = new QPDownloader();
+		qpdown = new QPDownloader();
 		final Object[] columnNames = new String[qpdown.seasonPagesInfo.size()];
 		int i=-1;
 		for(SeasonPage sp: qpdown.seasonPagesInfo){
@@ -94,7 +97,7 @@ public class GUI_QPDownloader extends JFrame{
 			}
 		}
 
-System.out.println((new JCheckBox()).getClass().toString() + " " + data[0][0].getClass().toString());
+//System.out.println((new JCheckBox()).getClass().toString() + " " + data[0][0].getClass().toString());
 		final ArrayList v = new ArrayList(SeasonPage.courses);
 		table = new JTable(){
 			public TableCellRenderer getCellRenderer(int row, int column) {
@@ -113,15 +116,9 @@ System.out.println((new JCheckBox()).getClass().toString() + " " + data[0][0].ge
 			}
 			public void setValueAt(Object value, int row, int col)
 			{
-				/*data[row][col] = (JCheckBox)()value;
-				if(editable[row][col])
-					((JCheckBox)data[row][col]).setSelected(!(((JCheckBox)data[row][col]).isSelected()));*/
 				((JCheckBox)data[row][col]).setSelected((Boolean)value);
 				fireTableCellUpdated(row, col);
 			}
-
-
-
 		});
 		table.setFillsViewportHeight(true);
 		
@@ -129,13 +126,27 @@ System.out.println((new JCheckBox()).getClass().toString() + " " + data[0][0].ge
         JPanel controls = new JPanel();
 		dl_btn.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-				//do stuff
-            }
+				System.out.println("Download btn event");
+				int r=-1;
+				for(String course: SeasonPage.courses){//for each course or row
+					int c = -1;	++r;
+					for(SeasonPage season: qpdown.seasonPagesInfo){//for each season or col
+						if(((JCheckBox)data[r][++c]).isSelected()){
+							for(CourseInfo ci : season.coursesInfo){
+								if(course.equals(ci.name)){
+									FileDownloader.main(new String[]{ci.link, course+" "+season.name});
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
         });
         controls.add(dl_btn);
 		
 		pane.setLayout(new BorderLayout());
-        pane.add(table.getTableHeader(), BorderLayout.PAGE_START);
+        //pane.add(table.getTableHeader(), BorderLayout.PAGE_START);
         pane.add(new JScrollPane(table), BorderLayout.CENTER);
         pane.add(controls, BorderLayout.SOUTH);
     }
