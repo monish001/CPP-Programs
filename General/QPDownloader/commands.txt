@@ -1,0 +1,3 @@
+javac *.java
+
+jar cfm TestApp.jar manifest.txt *.class
