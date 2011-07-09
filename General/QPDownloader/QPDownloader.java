@@ -16,24 +16,13 @@ import java.util.regex.Matcher;
 import java.util.ArrayList;
 import java.util.TreeSet;
 import java.util.Iterator;
-class CourseInfo implements Comparable{
+class CourseInfo/* implements Comparable*/{
 	CourseInfo(String na, String li){
 		name = (na!=null)?na:"";
 		link = (li!=null)?li:"";
 //		System.out.print(name + "\n" + link + "\n");
 	}
-	public int compareTo(Object o){
-		if(!(o instanceof CourseInfo)) return -1;
-		return compareTo((CourseInfo)o);
-	}
-	public int compareTo(CourseInfo o){
-		return (o==null ? name==null : ((o.name).equals(name)))?0:(-1);
-	}
-/*	boolean equals(CourseInfo o){
-		return (o==null ? name==null : (o.name).equals(name));
-	}
-	String toString(){return name;}
-*/	String link;
+	String link;
 	String name;
 }
 class SeasonPage{//Contains info for 1 exam season
@@ -53,7 +42,7 @@ class SeasonPage{//Contains info for 1 exam season
 			String course_name = input.substring(start, end).trim();
 			coursesInfo.add(new CourseInfo(course_name, course_link));
 			System.out.println(course_name);
-			courses.add(new CourseInfo(course_name, course_link));
+			courses.add(course_name);
 		}
 	}
 	
@@ -88,7 +77,7 @@ class SeasonPage{//Contains info for 1 exam season
 	String link;
 	String name;
 	ArrayList<CourseInfo> coursesInfo = new ArrayList<CourseInfo>();
-	static TreeSet<CourseInfo> courses = new TreeSet<CourseInfo>();
+	static TreeSet<String> courses = new TreeSet<String>();
 }
 public class QPDownloader{//downloads links from the html select box and saves each in SeasonPage object
 	QPDownloader(){
