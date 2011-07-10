@@ -51,7 +51,7 @@ class SeasonPage{//Contains info for 1 exam season
 	}
 	
 	public String toString(){
-		return name;
+		return name +"-"+ coursesInfo.size();
 	}
 	SeasonPage(String na, String li){
 		name = (na!=null)?na:"";
