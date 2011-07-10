@@ -20,7 +20,7 @@ class CourseInfo/* implements Comparable*/{
 	CourseInfo(String na, String li){
 		name = (na!=null)?na:"";
 		link = (li!=null)?li:"";
-		System.out.print(name + "\n" + link + "\n");
+//		System.out.print(name + "\n" + link + "\n");
 	}
 	String link;
 	String name;
@@ -41,9 +41,10 @@ class SeasonPage{//Contains info for 1 exam season
 			end = matcher2.end()-1;
 			String course_name = input.substring(start, end).trim();
 			coursesInfo.add(new CourseInfo(course_name, course_link));
-			System.out.println(course_name);
+//			System.out.println(course_name);
 			courses.add(course_name);
-		}
+		}else
+			System.out.println("REGEX ERROR 2");
 	}
 	
 	public String toString(){
@@ -52,24 +53,28 @@ class SeasonPage{//Contains info for 1 exam season
 	SeasonPage(String na, String li){
 		name = (na!=null)?na:"";
 		link = (li!=null)?li:"";
-		System.out.print(name + "\n" + link + "\n");
+		System.out.print("ze: " + name + "\n" + link + "\n");
 
 		//initialise coursesInfo
 		String seasonPageHTML = (new DownloadHTML(link)).getHTML();
+		
+		//http://172.31.19.11/qp/mstsep09/BT011.pdf">BT011</a></span>
 		//http://172.31.19.11/qp/esmay09/BH008.pdf" style="text-decoration: underline;"> BH008</
 		//http://cl.thapar.edu/qp/EN0105.pdf">EN105</
-		String patternString = "http.+pdf\".*>\\s*\\w*\\s*</a";
+		String patternString = "http.+pdf\".*</a";
 		Pattern pattern = Pattern.compile(patternString);
 		
 		Matcher matcher = pattern.matcher(seasonPageHTML);
+//		System.out.println("HTML: "+seasonPageHTML+"\n");
 		
 		while(matcher.find()){
 			int start = matcher.start();
 			int end = matcher.end();
 			String match = seasonPageHTML.substring(start, end);
+			System.out.println(match);
 			setCourseInfo(match);
 		}
-//		System.out.println("========================================================");
+		System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++");
 	}
 	static void printCourses(){
 		System.out.println(courses.size());
@@ -81,25 +86,29 @@ class SeasonPage{//Contains info for 1 exam season
 }
 public class QPDownloader{//downloads links from the html select box and saves each in SeasonPage object
 	QPDownloader(){
-		String input = (new DownloadHTML("http://cl.thapar.edu/library_qp.html")).getHTML();
-		String patternString = "<option.+option>";
+		String input = (new DownloadHTML("http://localhost/library_qp.html")).getHTML();
+		//String input = (new DownloadHTML("http://cl.thapar.edu/library_qp.html")).getHTML();
+		String patternString = "<option.+";
 		Pattern pattern = Pattern.compile(patternString);
 		
 		Matcher matcher = pattern.matcher(input);
 		while(matcher.find()){
 			int start = matcher.start()+14;
-			int end = matcher.end()-8;
+			int end = matcher.end();
 			String match = input.substring(start, end);
 			//for each page full of pdf links, read pdf link and its name in anchor tag.
+			System.out.println("1: "+match);
 			setExamSeasonInfo(match);
 		}
 //		printExamSeasonInfo();
 //		SeasonPage.printCourses();
 	}
 	void setExamSeasonInfo(String input){
+		if(!(input.endsWith("</option>")))
+			input += "</option>";
 		Pattern pattern1 = Pattern.compile("http.*html");
 		Matcher matcher1 = pattern1.matcher(input);
-		Pattern pattern2 = Pattern.compile(">.*<");
+		Pattern pattern2 = Pattern.compile(">.*</option>");
 		Matcher matcher2 = pattern2.matcher(input);
 		if(matcher1.find() && matcher2.find()){
 			int start = matcher1.start();
@@ -107,10 +116,12 @@ public class QPDownloader{//downloads links from the html select box and saves e
 			String season_link = input.substring(start, end);
 
 			start = matcher2.start()+1;
-			end = matcher2.end()-1;
+			end = matcher2.end()-9;
 			String season_name = input.substring(start, end);
+//			System.out.println(season_name +" "+ season_link+"\n");
 			seasonPagesInfo.add(new SeasonPage(season_name, season_link));
-		}
+		}else
+			System.out.println("REGEX ERROR\n");
 	}
 	void printExamSeasonInfo(){
 		Iterator season=seasonPagesInfo.iterator();
@@ -121,12 +132,6 @@ public class QPDownloader{//downloads links from the html select box and saves e
 			System.out.println(s.link);
 			System.out.println("");
 		}
-		/*for(SeasonPage s : seasonPagesInfo)
-		{
-			System.out.println(s.name);
-			System.out.println(s.link);
-			System.out.println("");
-		}*/
 	}
 	public static void main(String[] args){
 		QPDownloader examSeasons = new QPDownloader();
@@ -145,15 +150,22 @@ class DownloadHTML{
 			URLConnection conn = url.openConnection();
 			DataInputStream in = new DataInputStream ( conn.getInputStream ( ) ) ;
 			BufferedReader d = new BufferedReader(new InputStreamReader(in));
-			while(d.ready())
-			{
-				//System.out.println(d.readLine());
-				strbuf.append(d.readLine()+"\n");
+			boolean bodyStarts = false;
+			while(d.ready()){
+				do{
+					if(!bodyStarts && d.readLine().lastIndexOf("body")!=-1)
+						bodyStarts = true;
+					if(bodyStarts)
+						strbuf.append(d.readLine()+"\n");
+				}while(d.ready());
+				d.readLine();
 			}
+			in.close();
+			d.close();
 		}
 		catch(IOException e)
 		{
-			System.out.println(e);
+			System.out.println("DownloadHTML: "+e);
 		}
 	}
 	String getHTML()
