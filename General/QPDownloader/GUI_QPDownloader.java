@@ -76,7 +76,7 @@ public class GUI_QPDownloader extends JFrame implements ActionListener{
 		data = new JCheckBox[SeasonPage.courses.size()][qpdown.seasonPagesInfo.size()];
 		final boolean[][] editable = new boolean[SeasonPage.courses.size()][qpdown.seasonPagesInfo.size()];
 		int r=-1;
-		for(String course: SeasonPage.courses){//for each course or row
+		for(String course: SeasonPage.courses){// for each course or row
 			int c = -1;	++r;
 			//System.out.println(course);
 			for(SeasonPage season: qpdown.seasonPagesInfo){//for each season or col
