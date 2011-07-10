@@ -20,7 +20,7 @@ class CourseInfo/* implements Comparable*/{
 	CourseInfo(String na, String li){
 		name = (na!=null)?na:"";
 		link = (li!=null)?li:"";
-//		System.out.print(name + "\n" + link + "\n");
+		System.out.print(name + "\n" + link + "\n");
 	}
 	String link;
 	String name;
@@ -29,7 +29,7 @@ class SeasonPage{//Contains info for 1 exam season
 	void setCourseInfo(String input){
 		Pattern pattern1 = Pattern.compile("http.*pdf");
 		Matcher matcher1 = pattern1.matcher(input);
-		Pattern pattern2 = Pattern.compile(">.*<");
+		Pattern pattern2 = Pattern.compile("(>.*)+((\\s)*)?(\\w)*</");
 		Matcher matcher2 = pattern2.matcher(input);
 
 		if(matcher1.find() && matcher2.find()){
@@ -38,8 +38,11 @@ class SeasonPage{//Contains info for 1 exam season
 			String course_link = input.substring(start, end);
 
 			start = matcher2.start()+1;
-			end = matcher2.end()-1;
+			end = matcher2.end();
 			String course_name = input.substring(start, end).trim();
+			end = course_name.indexOf('<');
+			if(end != -1)
+				course_name = course_name.substring(0, end);
 			coursesInfo.add(new CourseInfo(course_name, course_link));
 //			System.out.println(course_name);
 			courses.add(course_name);
@@ -53,7 +56,7 @@ class SeasonPage{//Contains info for 1 exam season
 	SeasonPage(String na, String li){
 		name = (na!=null)?na:"";
 		link = (li!=null)?li:"";
-		System.out.print("ze: " + name + "\n" + link + "\n");
+		System.out.print(name + "\n" + link + "\n");
 
 		//initialise coursesInfo
 		String seasonPageHTML = (new DownloadHTML(link)).getHTML();
@@ -61,7 +64,7 @@ class SeasonPage{//Contains info for 1 exam season
 		//http://172.31.19.11/qp/mstsep09/BT011.pdf">BT011</a></span>
 		//http://172.31.19.11/qp/esmay09/BH008.pdf" style="text-decoration: underline;"> BH008</
 		//http://cl.thapar.edu/qp/EN0105.pdf">EN105</
-		String patternString = "http.+pdf\".*</a";
+		String patternString = "http.+pdf\".*((\\s)*)?.*((\\s)*)?</";
 		Pattern pattern = Pattern.compile(patternString);
 		
 		Matcher matcher = pattern.matcher(seasonPageHTML);
@@ -71,7 +74,7 @@ class SeasonPage{//Contains info for 1 exam season
 			int start = matcher.start();
 			int end = matcher.end();
 			String match = seasonPageHTML.substring(start, end);
-			System.out.println(match);
+//			System.out.println(match);
 			setCourseInfo(match);
 		}
 		System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++");
@@ -86,8 +89,8 @@ class SeasonPage{//Contains info for 1 exam season
 }
 public class QPDownloader{//downloads links from the html select box and saves each in SeasonPage object
 	QPDownloader(){
-		String input = (new DownloadHTML("http://localhost/library_qp.html")).getHTML();
-		//String input = (new DownloadHTML("http://cl.thapar.edu/library_qp.html")).getHTML();
+		//String input = (new DownloadHTML("http://localhost/library_qp.html")).getHTML();
+		String input = (new DownloadHTML("http://cl.thapar.edu/library_qp.html")).getHTML();
 		String patternString = "<option.+";
 		Pattern pattern = Pattern.compile(patternString);
 		
@@ -103,6 +106,12 @@ public class QPDownloader{//downloads links from the html select box and saves e
 //		printExamSeasonInfo();
 //		SeasonPage.printCourses();
 	}
+	String shortenSeasonName(String season_name){
+		season_name = season_name.replace("February", "Feb").replace("March", "Mar").replace("September", "Sep").replace("November", "Nov").replace("December", "Dec");
+		season_name = season_name.replaceFirst("Mid Semester Test", "MST").replaceFirst("Mid SemesterTest", "MST").replaceFirst("Mid Semester Examination", "MST");
+		season_name = season_name.replaceFirst("End Semester Test", "EST").replaceFirst("End Semester Examination", "EST").replaceFirst("E 2 D Examination", "E 2 D");
+		return season_name;
+	}
 	void setExamSeasonInfo(String input){
 		if(!(input.endsWith("</option>")))
 			input += "</option>";
@@ -117,7 +126,7 @@ public class QPDownloader{//downloads links from the html select box and saves e
 
 			start = matcher2.start()+1;
 			end = matcher2.end()-9;
-			String season_name = input.substring(start, end);
+			String season_name = shortenSeasonName(input.substring(start, end));
 //			System.out.println(season_name +" "+ season_link+"\n");
 			seasonPagesInfo.add(new SeasonPage(season_name, season_link));
 		}else

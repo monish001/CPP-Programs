@@ -17,7 +17,7 @@ import java.net.URL;
 				System.out.println("FileDownloader: "+args[0]+" "+args[1]);
 				URL url = new URL(args[0]);
 				java.io.BufferedInputStream in = new BufferedInputStream(url.openStream());
-				java.io.FileOutputStream fos = new FileOutputStream(args[1]+".pdf");
+				java.io.FileOutputStream fos = new FileOutputStream(args[1]);
 				java.io.BufferedOutputStream bout = new BufferedOutputStream(fos,1024);
 				byte[] data = new byte[1024];
 				int x=0;

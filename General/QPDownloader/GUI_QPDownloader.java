@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.AbstractButton;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -53,11 +54,11 @@ class CheckBoxRenderer implements TableCellRenderer, ItemListener {
 	String course;
 }
 
-public class GUI_QPDownloader extends JFrame{
+public class GUI_QPDownloader extends JFrame implements ActionListener{
     JButton dl_btn = new JButton("Download Selected");
 	JTable table;
 	QPDownloader qpdown;
-	
+	Object[][] data;
     public GUI_QPDownloader(String name) {
         super(name);
         //setResizable(false);
@@ -72,7 +73,7 @@ public class GUI_QPDownloader extends JFrame{
 		}
 
 		System.out.println(SeasonPage.courses.size()+" "+qpdown.seasonPagesInfo.size());
-		final Object[][] data = new JCheckBox[SeasonPage.courses.size()][qpdown.seasonPagesInfo.size()];
+		data = new JCheckBox[SeasonPage.courses.size()][qpdown.seasonPagesInfo.size()];
 		final boolean[][] editable = new boolean[SeasonPage.courses.size()][qpdown.seasonPagesInfo.size()];
 		int r=-1;
 		for(String course: SeasonPage.courses){//for each course or row
@@ -124,25 +125,7 @@ public class GUI_QPDownloader extends JFrame{
 		
 		//controls
         JPanel controls = new JPanel();
-		dl_btn.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e){
-				System.out.println("Download btn event");
-				int r=-1;
-				for(String course: SeasonPage.courses){//for each course or row
-					int c = -1;	++r;
-					for(SeasonPage season: qpdown.seasonPagesInfo){//for each season or col
-						if(((JCheckBox)data[r][++c]).isSelected()){
-							for(CourseInfo ci : season.coursesInfo){
-								if(course.equals(ci.name)){
-									FileDownloader.main(new String[]{ci.link, course+" "+season.name});
-									break;
-								}
-							}
-						}
-					}
-				}
-			}
-        });
+		dl_btn.addActionListener(this);
         controls.add(dl_btn);
 		
 		pane.setLayout(new BorderLayout());
@@ -150,6 +133,42 @@ public class GUI_QPDownloader extends JFrame{
         pane.add(new JScrollPane(table), BorderLayout.CENTER);
         pane.add(controls, BorderLayout.SOUTH);
     }
+
+	public void actionPerformed(ActionEvent e){
+		System.out.println("Download btn event");
+		JFileChooser chooser = new JFileChooser(); 
+		chooser.setCurrentDirectory(new java.io.File("."));
+		chooser.setDialogTitle("Choose Directory");
+		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		//
+		// disable the "All files" option.
+		//
+		chooser.setAcceptAllFileFilterUsed(false);
+		//  
+		String path = "";
+		if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) { 
+			path = chooser.getSelectedFile() + "\\";
+			System.out.println("getSelectedFile() : " +  path);
+		}
+		else {
+			System.out.println("No Selection ");
+		}
+				int r=-1;
+				for(String course: SeasonPage.courses){//for each course or row
+					int c = -1;	++r;
+					for(SeasonPage season: qpdown.seasonPagesInfo){//for each season or col
+						if(((JCheckBox)data[r][++c]).isSelected()){
+							for(CourseInfo ci : season.coursesInfo){
+								if(course.equals(ci.name)){
+									FileDownloader.main(new String[]{ci.link, path+course+" "+season.name+".pdf"});
+									break;
+								}
+							}
+						}
+					}
+				}
+		System.exit(0);
+	}
 
 	public static void main(String[] args){
         /* Use an appropriate Look and Feel */
@@ -173,12 +192,13 @@ public class GUI_QPDownloader extends JFrame{
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
 				//Create and set up the window.
-				GUI_QPDownloader frame = new GUI_QPDownloader("TU QPDownloader");
+				GUI_QPDownloader frame = new GUI_QPDownloader("Thapar Question Paper Downloader");
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				//Set up the content pane.
 				frame.addComponentsToPane(frame.getContentPane());
 				//Display the window.
-				frame.pack();
+				frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+				//frame.pack();
 				frame.setVisible(true);
             }
         });
