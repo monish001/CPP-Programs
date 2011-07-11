@@ -233,7 +233,8 @@ public class GUI_QPDownloader extends JFrame implements ActionListener{
 
 				//Set up the content pane.
 				frame.addLoadingMessage(frame.getContentPane());
-				frame.setSize(new Dimension(400, 300));
+				frame.pack();
+				frame.setSize(new Dimension((int)(frame.getSize().getWidth()), 300));
 				frame.setResizable(false);
 				frame.setVisible(true);
 				frame.update(frame.getGraphics());
