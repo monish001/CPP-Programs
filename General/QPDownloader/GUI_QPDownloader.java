@@ -175,28 +175,29 @@ public class GUI_QPDownloader extends JFrame implements ActionListener{
 		else {
 			System.out.println("No Selection ");
 		}
-				int r=-1;
-				for(String course: SeasonPage.courses){//for each course or row
-					int c = -1;	++r;
-					for(SeasonPage season: qpdown.seasonPagesInfo){//for each season or col
-						if(((JCheckBox)data[r][++c]).isSelected()){
-							for(CourseInfo ci : season.coursesInfo){
-								if(course.equals(ci.name)){
-									FileDownloader.main(new String[]{ci.link, path+course+" "+season.name+".pdf"});
-									break;
-								}
-							}
+		
+		int r=-1;
+		for(String course: SeasonPage.courses){//for each course or row
+			int c = -1;	++r;
+			for(SeasonPage season: qpdown.seasonPagesInfo){//for each season or col
+				if(((JCheckBox)data[r][++c]).isSelected()){
+					for(CourseInfo ci : season.coursesInfo){
+						if(course.equals(ci.name)){
+							FileDownloader.main(new String[]{ci.link, path+course+" "+season.name+".pdf"});
+							break;
 						}
 					}
 				}
+			}
+		}
 		System.exit(0);
 	}
 
 	public static void main(String[] args){
         /* Use an appropriate Look and Feel */
         try {
-            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-            //UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+            //UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+            UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
         } catch (UnsupportedLookAndFeelException ex) {
             ex.printStackTrace();
         } catch (IllegalAccessException ex) {
