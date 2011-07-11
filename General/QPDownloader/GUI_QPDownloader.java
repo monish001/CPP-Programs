@@ -80,7 +80,7 @@ public class GUI_QPDownloader extends JFrame implements ActionListener{
             pane.setLayout(new BorderLayout());
 			JLabel headerLabel = new JLabel();
             headerLabel.setFont(new java.awt.Font("Arial", Font.BOLD, 16));
-            headerLabel.setText("  Please wait. List of question papers is being downloaded.  ");
+            headerLabel.setText(" Please wait. List of question papers is being downloaded. It may take a minute or two.  ");
 
 			headerLabel.setVerticalAlignment(SwingConstants.CENTER);
             pane.add(headerLabel, BorderLayout.CENTER);
@@ -286,7 +286,7 @@ class MyJMenuBar{
 				//show about dialogue box
 				JOptionPane.showMessageDialog(frame, 
 "   Programming language: Java   \n"+
-"   Author: Monish Gupta", "About", JOptionPane.PLAIN_MESSAGE);
+"   Developer: Monish Gupta", "About", JOptionPane.PLAIN_MESSAGE);
 			}
 		});
 		menuItemExit.addActionListener(new ActionListener(){
