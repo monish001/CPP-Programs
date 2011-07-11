@@ -20,7 +20,7 @@ class CourseInfo/* implements Comparable*/{
 	CourseInfo(String na, String li){
 		name = (na!=null)?na:"";
 		link = (li!=null)?li:"";
-		System.out.print(name + ": " + link + "\n");
+//		System.out.print(name + ": " + link + "\n");
 	}
 	String link;
 	String name;
@@ -70,7 +70,7 @@ class SeasonPage{//Contains info for 1 exam season
 	SeasonPage(String na, String li){
 		name = (na!=null)?na:"";
 		link = (li!=null)?li:"";
-		System.out.print(name + ": " + link + "\n");
+//		System.out.print(name + ": " + link + "\n");
 
 		//initialise coursesInfo
 		String seasonPageHTML = (new DownloadHTML(link)).getHTML();
@@ -92,7 +92,7 @@ class SeasonPage{//Contains info for 1 exam season
 //			System.out.println("Match: "+match);
 			setCourseInfo(match);
 		}
-		System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++");
+//		System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++");
 	}
 	static void printCourses(){
 		System.out.println(courses.size());

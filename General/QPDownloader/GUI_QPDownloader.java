@@ -13,6 +13,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
+import java.awt.event.KeyEvent;
+import javax.swing.JOptionPane;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.SwingConstants;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
@@ -53,7 +58,7 @@ class CheckBoxRenderer implements TableCellRenderer, ItemListener {
         if(cb.getText().equals("")){//if label is ""
 			cb.setEnabled(false);
 		}
-		cb.addItemListener(this);
+		//cb.addItemListener(this);
         return cb;
     }
 	JCheckBox cb;
@@ -75,7 +80,7 @@ public class GUI_QPDownloader extends JFrame implements ActionListener{
             pane.setLayout(new BorderLayout());
 			JLabel headerLabel = new JLabel();
             headerLabel.setFont(new java.awt.Font("Arial", Font.BOLD, 16));
-            headerLabel.setText("  Please wait. Downloading list of question papers.  ");
+            headerLabel.setText("  Please wait. List of question papers is being downloaded.  ");
 
 			headerLabel.setVerticalAlignment(SwingConstants.CENTER);
             pane.add(headerLabel, BorderLayout.CENTER);
@@ -135,14 +140,17 @@ public class GUI_QPDownloader extends JFrame implements ActionListener{
 				return editable[r][c];
 			}
 			public Class getColumnClass(int columnIndex){
+//				System.out.println("In getColumnClass");
 				return Boolean.class;//(new JCheckBox()).getClass();
 			}
 			public Object getValueAt(int row, int col){
+//				System.out.println("In getValueAt");
 				return data[row][col];
 			}
 			public void setValueAt(Object value, int row, int col)
 			{
-				((JCheckBox)data[row][col]).setSelected((Boolean)value);
+//				System.out.println("In setValueAt");
+				((JCheckBox)data[row][col]).setSelected(!((JCheckBox)data[row][col]).isSelected());
 				fireTableCellUpdated(row, col);
 			}
 		});
@@ -160,7 +168,7 @@ public class GUI_QPDownloader extends JFrame implements ActionListener{
     }
 
 	public void actionPerformed(ActionEvent e){
-		System.out.println("Download btn event");
+		//System.out.println("Download btn event");
 		JFileChooser chooser = new JFileChooser(); 
 		chooser.setCurrentDirectory(new java.io.File("."));
 		chooser.setDialogTitle("Choose Directory");
@@ -172,6 +180,7 @@ public class GUI_QPDownloader extends JFrame implements ActionListener{
 		//  
 		String path = "";
 		if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) { 
+			JOptionPane.showMessageDialog(this, "Press OK to start downloading selected Question Papers");
 			path = chooser.getSelectedFile() + "";//  \\ for windows
 			if(path.equals("") || path.endsWith("\\") || path.endsWith("/"));
 			else if(path.indexOf('/') == -1)
@@ -192,7 +201,8 @@ public class GUI_QPDownloader extends JFrame implements ActionListener{
 							if(status)
 								break;
 							else{//show read/write permission error message and break
-								System.out.println("read/write permission error");
+								System.out.println("Read/write permission error for the chosen directory");
+								JOptionPane.showMessageDialog(this, "Read/write permission error for the chosen directory");
 								break labelOuter;
 							}
 						}
@@ -202,6 +212,7 @@ public class GUI_QPDownloader extends JFrame implements ActionListener{
 		}
 		if(status){
 			//show dialog box here
+			JOptionPane.showMessageDialog(this, "Selected Question Papers Downloaded to "+path);
 			System.out.println("Selected Question Papers Downloaded to "+path);
 		}
 		
@@ -235,8 +246,10 @@ public class GUI_QPDownloader extends JFrame implements ActionListener{
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
 				//Create and set up the window.
-				//frame.setBackground(Color.WHITE);
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+				frame.setJMenuBar((new MyJMenuBar(frame)).menuBar);
+				
 				//Display the window.
 				//frame.pack();
 
@@ -258,5 +271,28 @@ public class GUI_QPDownloader extends JFrame implements ActionListener{
 				frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
             }
         });
+	}
+}
+class MyJMenuBar{
+	JMenuBar menuBar = new JMenuBar();
+	MyJMenuBar(final JFrame frame){
+		JMenu menu = new JMenu("File");
+		menu.setMnemonic(KeyEvent.VK_F);
+		menuBar.add(menu);
+		JMenuItem menuItemAbout = new JMenuItem("About", KeyEvent.VK_A);
+		JMenuItem menuItemExit = new JMenuItem("Exit", KeyEvent.VK_X);
+		menuItemAbout.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				//show about dialogue box
+				JOptionPane.showMessageDialog(frame, "Module made in Java\nAuthor: Monish Gupta\nmonish.gupta1@gmail.com", "About", JOptionPane.PLAIN_MESSAGE);
+			}
+		});
+		menuItemExit.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+		menu.add(menuItemAbout);
+		menu.add(menuItemExit);
 	}
 }

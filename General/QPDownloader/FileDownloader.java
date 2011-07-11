@@ -17,7 +17,7 @@ import java.net.URL;
 				try{
 					if((args[0].substring(7,10)).equals("172"))
 						args[0] = "http://cl.thapar.edu/" + args[0].substring(20);
-					System.out.println("FileDownloader: "+args[0]+" "+args[1]);
+//					System.out.println("FileDownloader: "+args[0]+" "+args[1]);
 					URL url = new URL(args[0]);
 					in = new BufferedInputStream(url.openStream());
 					fos = new FileOutputStream(args[1]);
