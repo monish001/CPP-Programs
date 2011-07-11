@@ -180,22 +180,31 @@ public class GUI_QPDownloader extends JFrame implements ActionListener{
 //			System.out.println("getSelectedFile() : " +  path);
 
 		int r=-1;
+		boolean status = false;
+		labelOuter:
 		for(String course: SeasonPage.courses){//for each course or row
 			int c = -1;	++r;
 			for(SeasonPage season: qpdown.seasonPagesInfo){//for each season or col
-				if(((JCheckBox)data[r][++c]).isSelected()){
-					for(CourseInfo ci : season.coursesInfo){
-						if(course.equals(ci.name)){
-							FileDownloader.main(new String[]{ci.link, path+course+" "+season.name+".pdf"});
-							break;
+				if(((JCheckBox)data[r][++c]).isSelected()){//if this checkbox is selected
+					for(CourseInfo ci : season.coursesInfo){//for each courseInfo
+						if(course.equals(ci.name)){//find selected only
+							status = FileDownloader.download(new String[]{ci.link, path+course+" "+season.name+".pdf"});
+							if(status)
+								break;
+							else{//show read/write permission error message and break
+								System.out.println("read/write permission error");
+								break labelOuter;
+							}
 						}
 					}
 				}
 			}
 		}
-		System.exit(0);
-
-
+		if(status){
+			//show dialog box here
+			System.out.println("Selected Question Papers Downloaded to "+path);
+		}
+		
 		}
 		else {
 			System.out.println("No Selection ");
