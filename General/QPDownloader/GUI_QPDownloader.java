@@ -284,7 +284,9 @@ class MyJMenuBar{
 		menuItemAbout.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				//show about dialogue box
-				JOptionPane.showMessageDialog(frame, "Module made in Java\nAuthor: Monish Gupta\nmonish.gupta1@gmail.com", "About", JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(frame, 
+"   Programming language: Java   \n"+
+"   Author: Monish Gupta", "About", JOptionPane.PLAIN_MESSAGE);
 			}
 		});
 		menuItemExit.addActionListener(new ActionListener(){
