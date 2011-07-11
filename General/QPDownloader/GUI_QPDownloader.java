@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
+import javax.swing.SwingConstants;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -74,15 +75,17 @@ public class GUI_QPDownloader extends JFrame implements ActionListener{
             pane.setLayout(new BorderLayout());
 			JLabel headerLabel = new JLabel();
             headerLabel.setFont(new java.awt.Font("Arial", Font.BOLD, 16));
-            headerLabel.setText("  Loading list of available question papers");
-            pane.add(headerLabel, BorderLayout.NORTH);
+            headerLabel.setText("  Please wait. Downloading list of question papers.  ");
 
-            // add the image label
+			headerLabel.setVerticalAlignment(SwingConstants.CENTER);
+            pane.add(headerLabel, BorderLayout.CENTER);
+
+/*            // add the image label
             ImageIcon ii = new ImageIcon(this.getClass().getResource(
                     "temp.gif"));
 			JLabel imageLabel = new JLabel();
             imageLabel.setIcon(ii);
-            pane.add(imageLabel, BorderLayout.CENTER);
+            pane.add(imageLabel, BorderLayout.CENTER);*/
 
 //			pane.update(pane.getGraphics());
 	}
@@ -94,7 +97,7 @@ public class GUI_QPDownloader extends JFrame implements ActionListener{
 			columnNames[++i] = sp.toString();
 		}
 
-		System.out.println(SeasonPage.courses.size()+" "+qpdown.seasonPagesInfo.size());
+		System.out.println(SeasonPage.courses.size()+" courses in total for "+qpdown.seasonPagesInfo.size() + " exams.");
 		data = new JCheckBox[SeasonPage.courses.size()][qpdown.seasonPagesInfo.size()];
 		final boolean[][] editable = new boolean[SeasonPage.courses.size()][qpdown.seasonPagesInfo.size()];
 		int r=-1;
@@ -169,13 +172,13 @@ public class GUI_QPDownloader extends JFrame implements ActionListener{
 		//  
 		String path = "";
 		if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) { 
-			path = chooser.getSelectedFile() + "\\";
-			System.out.println("getSelectedFile() : " +  path);
-		}
-		else {
-			System.out.println("No Selection ");
-		}
-		
+			path = chooser.getSelectedFile() + "";//  \\ for windows
+			if(path.equals("") || path.endsWith("\\") || path.endsWith("/"));
+			else if(path.indexOf('/') == -1)
+				path += "\\";
+			else path += "/";
+//			System.out.println("getSelectedFile() : " +  path);
+
 		int r=-1;
 		for(String course: SeasonPage.courses){//for each course or row
 			int c = -1;	++r;
@@ -191,6 +194,13 @@ public class GUI_QPDownloader extends JFrame implements ActionListener{
 			}
 		}
 		System.exit(0);
+
+
+		}
+		else {
+			System.out.println("No Selection ");
+		}
+		
 	}
 
 	public static void main(String[] args){
@@ -222,8 +232,9 @@ public class GUI_QPDownloader extends JFrame implements ActionListener{
 				//frame.pack();
 
 				//Set up the content pane.
-				frame.setSize(new Dimension(330, 300));
 				frame.addLoadingMessage(frame.getContentPane());
+				frame.setSize(new Dimension(400, 300));
+				frame.setResizable(false);
 				frame.setVisible(true);
 				frame.update(frame.getGraphics());
             }
@@ -233,8 +244,8 @@ public class GUI_QPDownloader extends JFrame implements ActionListener{
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
 				frame.addComponentsToPane(frame.getContentPane());
+				frame.setResizable(true);
 				frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-				
             }
         });
 	}

@@ -55,7 +55,7 @@ class SeasonPage{//Contains info for 1 exam season
 				}
 				if(exists){
 					course_name += "a";
-					System.out.println("Repeat: "+course_name);
+//					System.out.println("Repeat: "+course_name);
 				}
 			}
 			coursesInfo.add(new CourseInfo(course_name, course_link));
@@ -65,7 +65,7 @@ class SeasonPage{//Contains info for 1 exam season
 	}
 	
 	public String toString(){
-		return name +"-"+ coursesInfo.size();
+		return name /*+"-"+ coursesInfo.size()*/;
 	}
 	SeasonPage(String na, String li){
 		name = (na!=null)?na:"";
@@ -89,7 +89,7 @@ class SeasonPage{//Contains info for 1 exam season
 			int start = matcher.start();
 			int end = matcher.end();
 			String match = seasonPageHTML.substring(start, end);
-			System.out.println("Match: "+match);
+//			System.out.println("Match: "+match);
 			setCourseInfo(match);
 		}
 		System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++");
@@ -115,7 +115,7 @@ public class QPDownloader{//downloads links from the html select box and saves e
 			int end = matcher.end();
 			String match = input.substring(start, end);
 			//for each page full of pdf links, read pdf link and its name in anchor tag.
-			System.out.println("Match: "+match);
+//			System.out.println("Match: "+match);
 			setExamSeasonInfo(match);
 		}
 //		printExamSeasonInfo();
