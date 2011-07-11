@@ -28,13 +28,11 @@ import java.net.URL;
 					{
 						bout.write(data,0,x);
 					}
-					fos.close();
 					bout.close();
 					in.close();
 				}catch(IOException e){
 					System.out.println(e.toString());
 					return false;
-				}finally{
 				}
 			}
 			return true;
