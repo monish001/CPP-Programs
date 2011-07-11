@@ -20,7 +20,7 @@ class CourseInfo/* implements Comparable*/{
 	CourseInfo(String na, String li){
 		name = (na!=null)?na:"";
 		link = (li!=null)?li:"";
-		System.out.print(name + "\n" + link + "\n");
+		System.out.print(name + ": " + link + "\n");
 	}
 	String link;
 	String name;
@@ -43,8 +43,22 @@ class SeasonPage{//Contains info for 1 exam season
 			end = course_name.indexOf('<');
 			if(end != -1)
 				course_name = course_name.substring(0, end);
-			coursesInfo.add(new CourseInfo(course_name, course_link));
 //			System.out.println(course_name);
+			boolean exists = true;
+			while(exists){
+				exists = false;
+				for(CourseInfo ci: coursesInfo){
+					if(course_name.equals(ci.name)){
+						exists = true;
+						break;
+					}
+				}
+				if(exists){
+					course_name += "a";
+					System.out.println("Repeat: "+course_name);
+				}
+			}
+			coursesInfo.add(new CourseInfo(course_name, course_link));
 			courses.add(course_name);
 		}else
 			System.out.println("REGEX ERROR 2");
@@ -56,7 +70,7 @@ class SeasonPage{//Contains info for 1 exam season
 	SeasonPage(String na, String li){
 		name = (na!=null)?na:"";
 		link = (li!=null)?li:"";
-		System.out.print(name + "\n" + link + "\n");
+		System.out.print(name + ": " + link + "\n");
 
 		//initialise coursesInfo
 		String seasonPageHTML = (new DownloadHTML(link)).getHTML();
@@ -64,7 +78,8 @@ class SeasonPage{//Contains info for 1 exam season
 		//http://172.31.19.11/qp/mstsep09/BT011.pdf">BT011</a></span>
 		//http://172.31.19.11/qp/esmay09/BH008.pdf" style="text-decoration: underline;"> BH008</
 		//http://cl.thapar.edu/qp/EN0105.pdf">EN105</
-		String patternString = "http.+pdf\".*((\\s)*)?.*((\\s)*)?</";
+		//String patternString = "http.+pdf\"([^>])*>((\\s)*)?(([^/\"])*\">)*(\\w)+</";
+		String patternString = "http.+pdf\"([^>])*>((\\s)*)?([^/])*(\\w){1,7}</";
 		Pattern pattern = Pattern.compile(patternString);
 		
 		Matcher matcher = pattern.matcher(seasonPageHTML);
@@ -74,7 +89,7 @@ class SeasonPage{//Contains info for 1 exam season
 			int start = matcher.start();
 			int end = matcher.end();
 			String match = seasonPageHTML.substring(start, end);
-//			System.out.println(match);
+			System.out.println("Match: "+match);
 			setCourseInfo(match);
 		}
 		System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++");
@@ -100,7 +115,7 @@ public class QPDownloader{//downloads links from the html select box and saves e
 			int end = matcher.end();
 			String match = input.substring(start, end);
 			//for each page full of pdf links, read pdf link and its name in anchor tag.
-			System.out.println("1: "+match);
+			System.out.println("Match: "+match);
 			setExamSeasonInfo(match);
 		}
 //		printExamSeasonInfo();
@@ -132,7 +147,7 @@ public class QPDownloader{//downloads links from the html select box and saves e
 		}else
 			System.out.println("REGEX ERROR\n");
 	}
-	void printExamSeasonInfo(){
+/*	void printExamSeasonInfo(){
 		Iterator season=seasonPagesInfo.iterator();
 		while(season.hasNext())
 		{
@@ -141,7 +156,7 @@ public class QPDownloader{//downloads links from the html select box and saves e
 			System.out.println(s.link);
 			System.out.println("");
 		}
-	}
+	}*/
 	public static void main(String[] args){
 		QPDownloader examSeasons = new QPDownloader();
 	}

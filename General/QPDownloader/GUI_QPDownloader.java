@@ -5,11 +5,16 @@
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Font;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
+import javax.swing.JLabel;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -64,6 +69,23 @@ public class GUI_QPDownloader extends JFrame implements ActionListener{
         //setResizable(false);
     }
 
+    public void addLoadingMessage(final Container pane) {
+			
+            pane.setLayout(new BorderLayout());
+			JLabel headerLabel = new JLabel();
+            headerLabel.setFont(new java.awt.Font("Arial", Font.BOLD, 16));
+            headerLabel.setText("  Loading list of available question papers");
+            pane.add(headerLabel, BorderLayout.NORTH);
+
+            // add the image label
+            ImageIcon ii = new ImageIcon(this.getClass().getResource(
+                    "temp.gif"));
+			JLabel imageLabel = new JLabel();
+            imageLabel.setIcon(ii);
+            pane.add(imageLabel, BorderLayout.CENTER);
+
+//			pane.update(pane.getGraphics());
+	}
     public void addComponentsToPane(final Container pane) {
 		qpdown = new QPDownloader();
 		final Object[] columnNames = new String[qpdown.seasonPagesInfo.size()];
@@ -127,7 +149,7 @@ public class GUI_QPDownloader extends JFrame implements ActionListener{
         JPanel controls = new JPanel();
 		dl_btn.addActionListener(this);
         controls.add(dl_btn);
-		
+		pane.removeAll();
 		pane.setLayout(new BorderLayout());
         //pane.add(table.getTableHeader(), BorderLayout.PAGE_START);
         pane.add(new JScrollPane(table), BorderLayout.CENTER);
@@ -187,19 +209,31 @@ public class GUI_QPDownloader extends JFrame implements ActionListener{
         /* Turn off metal's use of bold fonts */
         UIManager.put("swing.boldMetal", Boolean.FALSE);
         
+		final GUI_QPDownloader frame = new GUI_QPDownloader("Thapar Question Paper Downloader");
         //Schedule a job for the event dispatch thread:
         //creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
 				//Create and set up the window.
-				GUI_QPDownloader frame = new GUI_QPDownloader("Thapar Question Paper Downloader");
+				//frame.setBackground(Color.WHITE);
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				//Set up the content pane.
-				frame.addComponentsToPane(frame.getContentPane());
 				//Display the window.
-				frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 				//frame.pack();
+
+				//Set up the content pane.
+				frame.setSize(new Dimension(330, 300));
+				frame.addLoadingMessage(frame.getContentPane());
 				frame.setVisible(true);
+				frame.update(frame.getGraphics());
+            }
+        });
+        //Schedule a job for the event dispatch thread:
+        //creating and showing this application's GUI.
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+				frame.addComponentsToPane(frame.getContentPane());
+				frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+				
             }
         });
 	}
