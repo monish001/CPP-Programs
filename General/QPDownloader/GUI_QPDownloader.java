@@ -285,8 +285,9 @@ class MyJMenuBar{
 			public void actionPerformed(ActionEvent e) {
 				//show about dialogue box
 				JOptionPane.showMessageDialog(frame, 
-"   Programming language: Java   \n"+
-"   Developer: Monish Gupta", "About", JOptionPane.PLAIN_MESSAGE);
+"   Programming language: Java\n"+
+"   Developer: Monish Gupta\n"+
+"   monishgupta.blogspot.com", "About", JOptionPane.PLAIN_MESSAGE);
 			}
 		});
 		menuItemExit.addActionListener(new ActionListener(){
