@@ -1,4 +1,4 @@
-﻿//TowerOfHanoi.c
+//TowerOfHanoi.c
 #include<stdio.h>
 void move(int m, int d[], int* index_d, int e[], int* index_e, int f[], int* index_f)
 {
@@ -7,15 +7,13 @@ void move(int m, int d[], int* index_d, int e[], int* index_e, int f[], int* ind
 		e[*index_e] = d[*index_d - 1];
 		(*index_e)++;
 		(*index_d)--;	
+		showStatus(index_d, index_e, index_f, d, e, f);
 	}
 	else
 	{//move(n-1,d,f,e) 	//mov(1,d,e,f)	//mov(n-1,f,e,d)
 		move(m-1, d, index_d, f, index_f, e, index_e);
-		showStatus(index_d, index_e, index_f, d, e, f);
 		move(1, d, index_d, e, index_e, f, index_f);
-		showStatus(index_d, index_e, index_f, d, e, f);
 		move(m-1, f, index_f, e, index_e, d, index_d);	
-		showStatus(index_d, index_e, index_f, d, e, f);
 	}
 }
 int *A, *B, *C;
