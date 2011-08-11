@@ -5,11 +5,15 @@
 #define PRINT(int) printf("int = %d ",int)
 int main(){
 
- int x,y,z;
+int a[] ={ 11,22,37,48,59,69,97};
+char c[] = {' a','x','h','o','k'};
+printf("%d\t %d ", (&a[3]-&a[0]),(&c[3]-&c[0]));
+
+/* int x,y,z;
  x=03;y=02;z=01;
  PRINT(x^x);
  z<<=3;PRINT(x);
- y>>=3;PRINT(y); 
+ y>>=3;PRINT(y); */
 
 /*int a=10,b=20;
  a>=5?b=100:b=200;
