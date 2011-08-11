@@ -1,0 +1,23 @@
+//filename: ClosestAncestorOfGivenNodes.algo
+
+tree closestAncestor(tree root, tree node1, tree node1, int& result=0){
+	if(root==null){
+		return null;
+	}else if(root == node1){
+		result |= 1;
+		if(result == 3)	 return root;
+	}else if(root == node2){
+		result |= 2;
+		if(result == 3)	return root;
+	}else{
+		tree temp_node = closestAncestor(root->left, node1, node2, result);
+		if(temp_node)
+			return temp_node;
+		temp_node = closestAncestor(root->right, node1, node2, result);
+		if(temp_node)
+			return temp_node;
+		if(result == 3)
+			return root;
+	}
+	return null;
+}
