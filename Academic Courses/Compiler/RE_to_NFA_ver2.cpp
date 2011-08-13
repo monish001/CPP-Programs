@@ -1,12 +1,14 @@
-//filename: RE_to_NFA.cpp
-//Assumptions: 1. Input expression is postfix. Example: ab.ab/.*
+//filename: RE_to_NFA_ver2.cpp
+//Assumptions: 1. Input expression is infix. Example: b.c/(a/b)*.a.b.(c)*
 //2. Concatenation OR Dot operator is explicitly entered.
 //3. Expression is correct
+//4. Precedence of * (Kleene-Closure) is higher and other operators ( / . ) have same precedence.
 
 #include<iostream>
-//#include<map>
+#include"InfixToPostfixForRE.cpp" 
 #include<stack>
 using namespace std;
+string convert(string, int&);
 class RegEx{
 public:
 	RegEx(string reg, int st, int en):re(reg), start(st), end(en){}
@@ -66,21 +68,24 @@ void solve(string re){//input: postfix expression
 		}
 	}
 	cout<<"Start state is "<<stk.top().start<<"\nEnd state is "<<stk.top().end<<"\n";
-	cout<<"Node\ta\tb\tE\n";
+	cout<<" Node\t a\t b\t E\n------\t---\t---\t---\n";
 	for(int node =0 ; node < RegEx::nextNodeNum; node++){
 		cout<<node<<"\t";
-		(table[node][0] == -1)?(cout<<'\0'):(cout<<table[node][0]); cout<<"\t";
-		(table[node][1] == -1)?(cout<<'\0'):(cout<<table[node][1]); cout<<"\t";
-        if(table[node][2] != -1)
-            cout<<table[node][2];
+		(table[node][0] == -1)?(cout<<char(176)):(cout<<table[node][0]); cout<<"\t";
+		(table[node][1] == -1)?(cout<<char(177)):(cout<<table[node][1]); cout<<"\t";
+        (table[node][2] != -1)?(cout<<table[node][2]):(cout<<char(178));
         if(table[node][3] != -1)
 			cout<<", "<<table[node][3];
         cout<<"\n";
 	}
 }
 int main(){
-	string re_postfix;
-	cin>>re_postfix;
+	string in;
+	cin>>in;
+	int i=0;
+
+	string re_postfix = convert(in + ')', i);
+	cout<<"Postfix: "<<re_postfix<<"\n";
 	solve(re_postfix+"#" );
 	
 	fflush(stdin);
