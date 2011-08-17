@@ -91,7 +91,8 @@ main(){
             fflush(stdin); fscanf(stdin, "%d %d", &d1, &d2); 
             int status=0;
             node* ans = LeastCommonAncestor(head, d1, d2, &status);
-            fprintf(stdout, "Least Common Ancestor is: "); (ans!=NULL)?fprintf(stdout, "%d\n", ans->data):fputs("<INPUT DATA NOT FOUND>\n", stdout);
+            fprintf(stdout, "Least Common Ancestor is: "); 
+			(ans!=NULL)?fprintf(stdout, "%d\n", ans->data):fputs("<INPUT DATA NOT FOUND>\n", stdout);
             }
         }
 	}
