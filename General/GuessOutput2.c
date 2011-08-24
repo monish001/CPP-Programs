@@ -19,16 +19,18 @@ strcpy(s,"goodbye");}
 
 int main(int c, char* arg[]){
 
+
 /*unsigned char a = 255;
 if(a == (char)(-1))
     return 1;*/
-struct astruct{
+    
+/*struct astruct{
     char aint;
 };
 struct astruct obj;
 int arr[] = {12, 14, 15, 23, 45};
 printf("%u %u %u\n",1+ arr, 1+ &arr, &arr[0]);
-printf("%u %u\n",&obj, &(obj.aint));
+printf("%u %u\n",&obj, &(obj.aint));*/
 
     /*int a = 5;
     switch(a)
