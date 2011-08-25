@@ -1,5 +1,7 @@
 //FileName: LeastCommonAncestor.c
-
+//CONTENTS: 
+	//1.LeastCommonAncestor
+	//2.LargestBstInBinaryTree
 #include<stdio.h>
 
 typedef struct node node;
@@ -7,7 +9,7 @@ struct node{
 	int data;
 	node *right, *left;
 };
-node* LeastCommonAncestor(const node* root, const int data1, const int data2, int* const status){
+node* LeastCommonAncestor(node* root, const int data1, const int data2, int* const status){
     static node* ans = NULL;
     int l_st=0, r_st=0;
     if(root==NULL) return;
@@ -64,11 +66,35 @@ void freeTree(node* root){
     freeTree(root->right);
     free(root);
 }
+node* findBST(node* root, int* length){//root is not null always
+	node *lbst=NULL, *rbst=NULL;
+	int lht=0, rht=0;
+	if(root->left != NULL)
+		lbst = findBST(root->left, &lht);
+	if(root->right != NULL)
+		rbst = findBST(root->right, &rht);
+	if( ((root->left!=NULL)?((root->left == lbst) && (root->data > lbst->data)):(1)) && ((root->right!=NULL)?((root->right == rbst) && (root->data < rbst->data)):(1)) ){//if both sub-trees are BST and root also satifies the property of BST
+		*length = 1+((lht>rht)?(lht):(rht));
+		return root;
+	}
+	if(rht>lht){
+		*length = rht;
+		return rbst;
+	}
+	*length = lht;//return left subtree if BST of same ht found in each sub-tree of root
+	return lbst;
+}
+node* findLargestBST(node* root){
+	if(root==NULL)
+		return NULL;
+	int ht = 0;
+	return (node*)findBST(root, &ht);
+}
 main(){
 	node *head=NULL;
 	int flag=1;
     puts("          ----\n          MENU\n          ----\nPress 1 to create new tree\nPress 2 to see Inorder Traversal");
-    puts("Press 3 to find Least Common Ancestor\nPress 0 to exit\n-------------------------------------");
+    puts("Press 3 to find Least Common Ancestor\nPress 4 for largest sub-tree as BST\nPress 0 to exit\n-------------------------------------");
 	while(flag){
 	    char choice;
         printf("Enter your choice..");
@@ -77,9 +103,22 @@ main(){
             case '0':
             flag=0;
             break;
-            case '1':
-            freeTree(head);
-            head = makeTree();
+            case '1':{
+				char c='y';
+				if(head != NULL){
+					do{
+						fputs("Previously entered tree would be lost. Continue y/n ? ", stdout);
+						fflush(stdin);
+						scanf("%c", &c);
+						char tmp = tolower(c);
+						c = tmp;
+					}while(c != 'y' || c!='n');
+				}
+				if(c=='y'){
+						freeTree(head);
+						head = makeTree();
+				}
+			}
             break;
             case '2':
             fprintf(stdout, "Inorder Traversal: "); inOrderTraversal(head); puts("");
@@ -94,6 +133,17 @@ main(){
             fprintf(stdout, "Least Common Ancestor is: "); 
 			(ans!=NULL)?fprintf(stdout, "%d\n", ans->data):fputs("<INPUT DATA NOT FOUND>\n", stdout);
             }
+			break;
+			case '4'://Largest BST
+            {
+			node *temp_tree = findLargestBST(head);
+			if(temp_tree!=NULL){
+				fprintf(stdout, "Inorder Traversal of largest BST found: "); 
+				inOrderTraversal(temp_tree);
+				fputs("\n", stdout);
+			}else fputs("Input tree is empty!!\n", stdout);
+			}
+			
         }
 	}
 //	getch();
