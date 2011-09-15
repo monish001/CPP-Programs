@@ -3,35 +3,35 @@
 //2. Append an empty line at the end of the program.
 
 #define MAXLINE 300
-#include<stdio.h>
-#include"hashingWithChaining.c"
+#include <stdio.h>
+#include "hashingWithChainingMOT.c"
+#include "POT.c"
 
 void completeOperand(char* p1){
 	char *p2 = strtok(NULL, "\n");
 	p1[strlen(p1)] = ',';
 }
 void tokenizeLine(char *str){
-	int lab_next=0, opc_next=0, ope1_next=0, ope2_next=0;
+	static int lc;
 
+	int lab_next=0, opc_next=0, ope1_next=0, ope2_next=0;
 	char label[MAXLINE][MAXLINE];
 	char opcode[MAXLINE][MAXLINE];
 	char operand1[MAXLINE][MAXLINE];
 	char operand2[MAXLINE][MAXLINE];
      
+//Symbol
 	char* token = strtok(str, " ");
-	
 	if(token[0] == '\t') 
 		token=NULL;   
     if(token!=NULL){
         strcpy(label[lab_next++], token);}
 	printf("Label : %s\n", token);
-
+//Opcode
 	token = strtok(NULL, " \n"); 
-	
 	if(token!=NULL) strcpy(opcode[opc_next++], token);
-	
 	printf("Opcode : %s\n", token);
-	
+//OPERAND1
 	token = strtok(NULL, ",\n");
 	if(token!=NULL){
 		char *c = strchr(token, '\'');
@@ -40,29 +40,39 @@ void tokenizeLine(char *str){
 		strcpy(operand1[ope1_next++], token);
 	} 
 	printf("Operand1 : %s\n", token);
-	
+//LC (char* token points to Operand1)
+	printf("LC: %d\n", lc);
+	if(FindInPOT(opcode[opc_next-1] ,token) != -1)//found in POT
+		lc += FindInPOT(opcode[opc_next-1] ,token);// puts("foud in POT");}
+	else if(lookupInMOT(opcode[opc_next-1]) != NULL)//find in MOT
+		lc += lookupInMOT(opcode[opc_next-1])->length;
+	else{//invalid opcode
+		puts("Opcode NOT Found! Press any key to exit."); 
+		getch(); 
+		exit(0);
+	}
+//OPERAND2
 	token = strtok(NULL, "");
 	printf("Operand2 : %s\n", token);
 	if(token!=NULL) strcpy(operand2[ope2_next++], token);
 }
-void registerOpcodes(){
-	struct node{
-		char name[20];
-		int len;
-	};
-	struct node opcode[] = {{"start", 0},{"balr", 0},{"using" ,0},{"sr", 5},{"l", 7},{"a", 4}, {"st", 5}, {"bct", 5}, {"br", 5}, {"dc", 5}, {"ltorg", 5}, {"end", 5} };
-	int i, n = sizeof(opcode)/sizeof(struct node);
-	for(i=0; i<n; i++)
-		install(opcode[i].name, opcode[i].len);
+void initMOT(){
+	installInMOT("sr", 2);
+	installInMOT("balr", 2);
+	installInMOT("br", 2);
+	installInMOT("l", 4);
+	installInMOT("a", 4);
+	installInMOT("st", 4);
+	installInMOT("bct", 4);
 }
 int main(){
 
 	FILE *fp = fopen("Prog.asm", "r");
 
 	if(fp == NULL)
-          { puts("FILE NOT FOUND"); getchar(); exit(0); }
-	
-	registerOpcodes();
+	{ puts("FILE NOT FOUND"); getchar(); exit(0); }
+
+	initMOT();
 	
 	char str[MAXLINE] = {0};
 	do{
@@ -74,7 +84,8 @@ int main(){
 		tokenizeLine(str);
 		getchar();
 		if(breakFlag) break;
-	}while(1/*!feof(fp)*/);
-//	getchar();
+	}while(1  &&  !feof(fp) );
+	deleteHash();
 	return 0;
 }
+
