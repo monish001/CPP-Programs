@@ -1,6 +1,6 @@
 //filename: hashingWithChaining.c
 //Hashing for keys: string(char*), value: int
-#define HASHSIZE 40
+#define HASHSIZE 41 //prime number
 #include<stdio.h>
 struct nlist{
 	struct nlist *next;   
