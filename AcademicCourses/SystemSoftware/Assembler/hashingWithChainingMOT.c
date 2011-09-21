@@ -1,4 +1,5 @@
-//filename: hashingWithChaining.c
+//filename: hashingWithChainingMOT.c
+//MOT: Machine OperationCode Table as in IBM 360/370
 //Hashing for keys: string(char*), value: int
 #define HASHSIZE 41 //prime number
 #include<stdio.h>
