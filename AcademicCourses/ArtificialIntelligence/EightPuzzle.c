@@ -1,16 +1,21 @@
 /**
-*EightPuzzle.c
-*Goal State:
-* 12
-*345
-*789
+* EightPuzzle.c
+* Goal State:
+*  12
+* 345
+* 789
+* 
+* Strategy: Steepest Ascent Hill Climbing
+* heuristic() needs to be improved
+* In Windows XP, runs well in Dev-Cpp but not in Code::Blocks
 */
 #include<stdio.h>
+#define INF_INT 32500
 int heuristic(int a[]){//return number of correctly placed blocks
 	int ans=0;
 	int i;
 	for(i=0; i<9; i++)
-		ans += (a[i]==i);
+		ans += abs(a[i]-i) + (a[i]==i);
 	return ans;
 }
 void printBoard(int a[]){
@@ -29,12 +34,12 @@ int posOfSpace(int a[]){
 			break;
 	return i;
 }
-int max(int a, int b){
-	return (a>b)?a:b;
+int min(int a, int b){
+	return (a<b)?a:b;
 }
 int chooseBest(int a[]){
 	int pres_h = heuristic(a);
-	int b[9], bh=-1, c[9], ch=-1, d[9], dh=-1, e[9], eh=-1;
+	int b[9], bh=INF_INT, c[9], ch=INF_INT, d[9], dh=INF_INT, e[9], eh=INF_INT;
 	int i;
 	for(i=0; i<9; i++)
 		b[i]=c[i]=d[i]=e[i]=a[i];
@@ -52,19 +57,19 @@ int chooseBest(int a[]){
 		d[posSpace] ^= d[posSpace-1] ^= d[posSpace] ^= d[posSpace-1]; //swap
 		dh = heuristic(d);
 	}
-	if(posSpace/3 != 0){//empty block not in last col
+	if(posSpace%3 != 2){//empty block not in last col
 		e[posSpace] ^= e[posSpace+1] ^= e[posSpace] ^= e[posSpace+1]; //swap
 		eh = heuristic(e);
 	}
-	int max_h = max(max(bh, ch), max(dh, eh));
-	if(pres_h > max_h)
+	int min_h = min(min(bh, ch), min(dh, eh));
+	if(pres_h < min_h)
 		return 0;//no better option available
-	
-	if(max_h == bh)
+
+	if(min_h == bh)
 		memcpy(a, b, 9*sizeof(int));
-	else if(max_h==ch)
+	else if(min_h==ch)
 		memcpy(a, c, 9*sizeof(int));
-	else if(max_h==dh)
+	else if(min_h==dh)
 		memcpy(a, d, 9*sizeof(int));
 	else
 		memcpy(a, e, 9*sizeof(int));
@@ -72,12 +77,13 @@ int chooseBest(int a[]){
 	return 1;
 }
 int main(){
-	int a[] = {1,2,4,6,8,3,0,7,5};
+//	int a[] = {1,2,4,6,8,3,0,7,5};
+	int a[] = {0,2,4, 1,8,3, 6,7,5};
 	printBoard(a);
 	int NoBetterStateExists = 0;
-	while(heuristic(a) != 9){
+	while(heuristic(a) != 0){
 		if(chooseBest(a) == 0){
-			printBoard(a);
+			//printBoard(a);
 			NoBetterStateExists = 1;
 			break;
 		}
