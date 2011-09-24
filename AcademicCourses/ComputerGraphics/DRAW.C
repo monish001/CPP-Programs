@@ -13,16 +13,47 @@ void lineDDA(const point p1, const point p2, const int color){
 		y += yInc;
 	}
 }
-void putPixelAllOctants(const point center, const int x, const int y, int color){
-	putpixel(x+center.x, y+center.y, color);
-	putpixel(-x+center.x, y+center.y, color);
-	putpixel(x+center.x, -y+center.y, color);
-	putpixel(-x+center.x, -y+center.y, color);
-	putpixel(y+center.x, x+center.y, color);
-	putpixel(-y+center.x, x+center.y, color);
-	putpixel(y+center.x, -x+center.y, color);
-	putpixel(-y+center.x, -x+center.y, color);
+void putPixelAllQuaters(const point center, const int x, const int y, int color){
+	putpixel(ROUND(x+center.x), ROUND(y+center.y), color);
+	putpixel(ROUND(-x+center.x), ROUND(y+center.y), color);
+	putpixel(ROUND(x+center.x), ROUND(-y+center.y), color);
+	putpixel(ROUND(-x+center.x), ROUND(-y+center.y), color);
 }
+//Mid-point ellipse Algorithm
+//There is some bug(s) present in this function
+void ellipseMidPoint(const point center, const point radius, const int color){
+	int x=0, y = radius.y, a=radius.x, b=radius.y;
+	int a2 = a*a, b2 = b*b;
+	float p = b2 - a2*b + a2/(float)4;
+	while(b2*x < a2*y){
+		putPixelAllQuaters(center, x, y, color);
+		if(p<0){
+			p+= 2*b2*x + b2;
+		}else{
+			y--;
+			p+= 2*b2*x + b2 - 2*a2*y;
+		}
+		x++;
+	}
+	//x = a2*a2/(float)(a2+b2);
+	//y = b2*b2/(float)(a2+b2);
+	p = b2*(x+.5)*(x+.5) + a2*(y-1)*(y-1) - a2 - b2;
+	while(y>=0){
+		putPixelAllQuaters(center, x, y, color);
+		if(p>0){
+			p+= -2*a2*y + a2;
+		}else{
+			x++;
+			p+= -2*a2*y + a2 + 2*b2*x;
+		}
+		y--;
+	}
+}
+void putPixelAllOctants(const point center, const int x, const int y, int color){
+	putPixelAllQuaters(center, x, y, color);
+	putPixelAllQuaters(center, y, x, color);
+}
+//Mid-point circle algorithm
 void circleBresenham(const point center, const int r, const int color){
 //if point P is (x+1,y), outer point
 //D(P) = (x+1)^2 + y^2 - r^2
@@ -48,14 +79,3 @@ void circleBresenham(const point center, const int r, const int color){
 	}
 
 }
-/*void LineBresenham(const point a, const point b){
-//y - p1.y = (x-p1.x)*dy/dx
-	int dx = a.x-b.x, dy = a.y-a.x;
-	if(abs(dx)<abs(dy)){//If slope is greater than 1
-		LineBresenham();
-		return;
-	}
-//D(x, y) = y - (x-x1)*dy/dx - y1
-//D(x,y)+D(x,y-1)=2y-1
-	int p = 
-}*/

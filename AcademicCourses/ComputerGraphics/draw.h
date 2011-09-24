@@ -2,6 +2,7 @@
 #include<graphics.h>
 typedef struct point{int x; int y;} point;
 
-void lineDDA(const point, const point, const int);
-void circleBresenham(const point, const int, const int);
+void lineDDA(const point p1, const point p2, const int color);
+void circleBresenham(const point center, const int r, const int color);
+void ellipseMidPoint(const point center, const point radius, const int color);
 
