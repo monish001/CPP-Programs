@@ -1,6 +1,4 @@
-//InComplete.
 //filename: RE_to_NFA_ver3.cpp
-//Fixed: to eliminate the info of overlapping states/node (which are due to dot operation eg.  ab. in postfix)
 //Assumptions: 1. Input expression is infix. Example: b.c/(a/b)*.a.b.(c)*
 //2. Concatenation OR Dot operator is explicitly entered.
 //3. Expression is correct
@@ -9,6 +7,7 @@
 #include<iostream>
 #include"InfixToPostfixForRE.cpp" 
 #include<stack>
+#include<cstdlib>
 using namespace std;
 string convert(string, int&);
 class RegEx{
@@ -19,18 +18,16 @@ public:
 	string re;
 };
 int RegEx::nextNodeNum = 0;
-int existsInCopy(const int& node, const vector<int>& copy){
-	for(int i=0; i<copy.size(); i++)
-		if(copy[i] == node)
-			return 1;
-	return 0;
+int compareints (const void * a, const void * b)
+{
+  return ( *(int*)a - *(int*)b );
 }
+
 void solve(string re){//input: postfix expression
-     
+
 	int table[50][4];//table[i][j] : ith node with input as jth symbol. j =0 means a, =1 b, =2,3 epsilon
 	memset(table, -1, 50*4*sizeof(int));
-	vector<int> copy;//to store the info of overlapping states/node (which are due to dot operation eg.  ab. in postfix)
-	//copy the states mentioned into state-1
+	vector<int> banStates;
 	stack<RegEx> stk;
 	for(int i=0; re.at(i) != '#'; i++){
 		switch(re.at(i)){
@@ -51,10 +48,13 @@ void solve(string re){//input: postfix expression
 				break;	}
 			case '.':{
 				RegEx b(stk.top()); stk.pop();
+				banStates.push_back(b.start);
 				RegEx a(stk.top()); stk.pop();
-				table[a.end][2] = b.start;
+				table[a.end][0] = table[b.start][0];
+				table[a.end][1] = table[b.start][1];
+				table[a.end][2] = table[b.start][2];
+				table[a.end][3] = table[b.start][3];
 				stk.push(RegEx(a.re+b.re+".", a.start, b.end));
-				copy.push_back(b.start); 
 				break;}
 			case '/':{
 				RegEx b(stk.top()); stk.pop();
@@ -77,20 +77,10 @@ void solve(string re){//input: postfix expression
 				stk.push(b);	}
 		}
 	}
-	
-	//remove states specified in map copy
-	for(int i=0; i<copy.size(); i++){
-		int tmp_state = copy[i];
-		table[tmp_state-1][0] = table[tmp_state][0];
-		table[tmp_state-1][1] = table[tmp_state][1];
-		table[tmp_state-1][2] = table[tmp_state][2];
-		table[tmp_state-1][3] = table[tmp_state][3];
-	}	
-	
 	cout<<"Start state is "<<stk.top().start<<"\nEnd state is "<<stk.top().end<<"\n";
 	cout<<" Node\t a\t b\t E\n------\t---\t---\t---\n";
 	for(int node =0 ; node < RegEx::nextNodeNum; node++){
-		if(existsInCopy(node, copy))
+		if(bsearch(&node, &banStates[0], banStates.size(), sizeof(int), compareints) != NULL)//if node exists in banStates
 			continue;
 		cout<<node<<"\t";
 		(table[node][0] == -1)?(cout<<char(176)):(cout<<table[node][0]); cout<<"\t";
@@ -106,12 +96,11 @@ int main(){
 	cin>>in;
 	int i=0;
 
-	string re_postfix = convert(in + ')', i);
-	cout<<"Postfix: "<<re_postfix<<"\n";
-	solve(re_postfix+"#" );
+	string regex_postfix = convert(in + ')', i);
+	cout<<"Postfix: "<<regex_postfix<<"\n";
+	solve(regex_postfix+"#" );
 	
 	fflush(stdin);
 	getchar();
 	return 0;
 }
-
