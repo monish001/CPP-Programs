@@ -51,7 +51,17 @@ struct nlist* installInMOT(char *opcode_name, int len){//install: put (opcode_na
 	return np;
 }
 
-void deleteHash(){
+void initMOT(){
+	installInMOT("sr", 2);
+	installInMOT("balr", 2);
+	installInMOT("br", 2);
+	installInMOT("l", 4);
+	installInMOT("a", 4);
+	installInMOT("st", 4);
+	installInMOT("bct", 4);
+}
+
+void deleteMOT(){
 	int i;
 	for(i=0; i<HASHSIZE; i++){
 		struct nlist* np = hashtable[i];
