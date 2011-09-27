@@ -7,7 +7,7 @@
 #include "POT.c"
 
 void completeOperand(char* p1){
-	char *p2 = strtok(NULL, "\n");
+	char *p2 = (char*)strtok(NULL, "\n");
 	p1[strlen(p1)] = ',';
 }
 void tokenizeLine(char *str){
@@ -19,16 +19,17 @@ void tokenizeLine(char *str){
 	char operand2[MAXLINE/4]={0};
      
 //Symbol
-	char* token = strtok(str, " ");
+	char* token = (char*)strtok(str, " ");
 	if(token[0] == '\t') 
 		token=NULL;   
     if(token!=NULL){
         strcpy(label, token);}
 //Opcode
-	token = strtok(NULL, " \n"); 
-	if(token!=NULL) strcpy(opcode, token);
+	token = (char*)strtok(NULL, " \n"); 
+	if(token!=NULL) 
+		strcpy(opcode, token);
 //OPERAND1
-	token = strtok(NULL, ",\n");
+	token = (char*)strtok(NULL, ",\n");
 	if(token!=NULL){
 		char *c = strchr(token, '\'');
 		if(c!=NULL)
@@ -36,7 +37,7 @@ void tokenizeLine(char *str){
 		strcpy(operand1, token);
 	} 
 //OPERAND2
-	token = strtok(NULL, "");
+	token = (char*)strtok(NULL, "");
 	if(token!=NULL) strcpy(operand2, token);
 
 //Print to stdout
@@ -46,8 +47,8 @@ void tokenizeLine(char *str){
 	printf("Operand1 : %s\n", operand1);
 	printf("Operand2 : %s\n", operand2);
 //LC (char* token points to Operand1)
-	if(FindInPOT(opcode ,token) != -1)//found in POT
-		lc += FindInPOT(opcode ,token);// puts("foud in POT");}
+	if(FindInPOT(opcode ,operand1) != -1)//found in POT
+		lc += FindInPOT(opcode ,operand1);// puts("foud in POT");}
 	else if(lookupInMOT(opcode) != NULL)//find in MOT
 		lc += lookupInMOT(opcode)->length;
 	else{//invalid opcode
