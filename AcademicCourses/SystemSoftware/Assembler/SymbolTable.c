@@ -1,9 +1,12 @@
 
 #define ST_HASHSIZE 41 //prime number
+enum relocation{NIL, ABS, RELOC};
 struct symbolList{
 	struct symbolList *next;   
 	char* symName;
+	short length;//datatype length
 	int lcValue;
+	enum relocation reloc;
 };
 
 static struct symbolList *symbolTable[ST_HASHSIZE]; /*pointer table*/ //Static means automatically initialises as NULL ptrs
@@ -26,7 +29,7 @@ char *strCopy(char const *const s);//allocates memory for the new string and ret
 /*
  *Stores symbol with LC value
  */
-struct symbolList* STSTO(char const* const symbolNameCharPtr, const int lcInt){//install: put (symbolNameCharPtr, lcInt) in symbolTable[]
+struct symbolList* STSTO(char const* const symbolNameCharPtr, const int lcInt, const int len, enum relocation aRelocation){//install: put (symbolNameCharPtr, lcInt) in symbolTable[]
 //return NULL for lack of memory
 	struct symbolList* np;
 	
@@ -38,12 +41,13 @@ struct symbolList* STSTO(char const* const symbolNameCharPtr, const int lcInt){/
 			free(np); 
 			return NULL;
 		}
-		np->lcValue = lcInt;
 		unsigned hashval = hashST(symbolNameCharPtr);
 		np->next = symbolTable[hashval];
 		symbolTable[hashval] = np;
-	}else//found
-		np->lcValue = lcInt;
+	}
+	np->lcValue = lcInt;
+	np->length=len;//datatype length
+	np->reloc=aRelocation;
 	return np;
 }
 
@@ -59,5 +63,14 @@ void deleteST(){
 		}
 	}
 }
-
+/*
+ *Evaluates an arithematic expression assuming * has value lcInt
+ */
+int EVAL(char *operand1, int lcInt){
+	//incomplete
+    while(strchr(operand1, '*')!=NULL){
+		;//substitute();
+	}
+	
+}
 //int main(){return 0;}

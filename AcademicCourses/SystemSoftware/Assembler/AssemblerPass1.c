@@ -1,6 +1,11 @@
 //Assumptions: 
 //1. When there is no label, use tab followed by space.
 
+//PASS 1: For each line
+//			add symbol (along with LC value) into ST
+//			check in POT if pseudo-op (and correcsponing action) else check in MOT
+//			add literal into LT and it's value(LC) when LTORG/END is found
+
 #define MAXLINE 200
 #include <stdio.h>
 #include "hashingWithChainingMOT.c"
@@ -9,14 +14,15 @@
 #include "SymbolTable.c"
 #include "LiteralTable.c"
 #include "AssemblerPass2.c"
+//FILE *log = fopen("assembler.log", "w");
 
 void completeOperand(char* p1){
 	char *p2 = (char*)strtok(NULL, "\n");
 	p1[strlen(p1)] = ',';
 }
-void tokenizeLine(char *str, FILE const* const fp){
+void tokenizeLine(char *str, FILE * fp){
 	static int lcInt;
-
+	int curOpcodeLength=0;
 	char label[MAXLINE/4]={0};
 	char opcode[MAXLINE/4]={0};
 	char operand1[MAXLINE/4]={0};
@@ -28,12 +34,13 @@ void tokenizeLine(char *str, FILE const* const fp){
 		token=NULL;   
     if(token!=NULL){
         strcpy(label, token);
-		STSTO(label, lcInt);
 	}
 //Opcode
 	token = (char*)strtok(NULL, " \n"); 
-	if(token!=NULL) 
+	if(token!=NULL){
 		strcpy(opcode, token);
+		
+	}
 //OPERAND1
 	token = (char*)strtok(NULL, ",\n");
 	if(token!=NULL){
@@ -50,19 +57,30 @@ void tokenizeLine(char *str, FILE const* const fp){
 		addLiteral(operand2+1);//Add literal to Literal Table
 	}
 
-//Print to PassOneOutput.tmp
+
+	//Print to PassOneOutput.tmp
 	fprintf(fp, "%d %s %s %s\n", lcInt, (label==NULL)?("NoLabel"):(label), opcode, (operand1==NULL)?("\t"):(operand1), (operand2==NULL)?("\t"):(operand2));
 
 //LC to add storage space for this opcode
 	if(FindInPOT(opcode ,operand1) != -1)//found in POT
-		lcInt += FindInPOT(opcode ,operand1);// puts("foud in POT");}
+		curOpcodeLength = FindInPOT(opcode ,operand1);// puts("foud in POT");}
 	else if(lookupInMOT(opcode) != NULL)//find in MOT
-		lcInt += lookupInMOT(opcode)->length;
+		curOpcodeLength = lookupInMOT(opcode)->length;
 	else{//invalid opcode
 		puts("Opcode NOT Found! Press any key to exit."); 
 		getch(); 
 		exit(0);
-	}	
+	}
+//add Symbol to ST
+	if(strcmp(label, "equ")==0){//Example: 1.setup	equ		*			2.database	equ		13 
+	//1 is Relocatable but 2. is abs
+		int value = 1;//EVAL(operand1, lcInt);
+		STSTO(label, value, 1, (enum relocation)((strchr(operand1, '*')==NULL)?(ABS):(RELOC))); 
+	}
+	else if(strlen(label)>0){
+		STSTO(label, lcInt, ((curOpcodeLength==0)?1:curOpcodeLength), (enum relocation)RELOC); }
+
+	lcInt += curOpcodeLength;
 }
 
 int main(){

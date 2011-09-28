@@ -1,4 +1,4 @@
-void Pass2(FILE const * const fp){
-	fseek(fp, 0, CUR_SET);
+void Pass2(FILE *fp){
+	fseek(fp, 0, SEEK_SET);
 	
 }

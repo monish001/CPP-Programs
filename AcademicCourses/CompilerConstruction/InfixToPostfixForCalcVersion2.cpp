@@ -46,7 +46,7 @@ int main(){
 //	cout<<(string(1,'a')+"")<<"\n";
 	cin>>in;
     int index = 0;
-	cout<<convert(in+')', index);
+	cout<<convert( in+')',index );
     
 	fflush(stdin);
 	getchar();

@@ -10,7 +10,7 @@ unsigned int hashLit(char const *ptr){//form hash value from string s
 	return ans%LIT_HASHSIZE;
 }
 
-enum relocation{NIL, ABS, RELOC};
+enum relocation;
 struct litRecord{
 	char* name;//Name of the literal
 	short length;//datatype length
