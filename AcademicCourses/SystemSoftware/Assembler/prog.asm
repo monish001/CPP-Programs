@@ -1,4 +1,8 @@
 test start
+	 ds 100c
+	 ds 100h
+	 ds 100f
+	 ds 100d
 begin balr 15,0
 	 using begin+2,15
 	 sr 4,4

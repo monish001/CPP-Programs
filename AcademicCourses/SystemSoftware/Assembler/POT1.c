@@ -1,8 +1,9 @@
+//POT1.c
 struct potNode{
 	char opcode[20];
 	int (*f)();
 };
-int DLENGTH(const char c){
+int dLength(const char c){
 	switch(c){
 		case 'C':
 		case 'c':
@@ -22,13 +23,12 @@ int DLENGTH(const char c){
 	getch();
 	exit(0);
 }
-int DS_LENGTH(char * opcodeCharPtr, char* operand1CharPtr){
-	//Incomplete yet
-	return 100;
+int dsLength(char * opcodeCharPtr, char* operand1CharPtr){//example DS 100F
+	return atoi(operand1CharPtr)*dLength(operand1CharPtr[strlen(operand1CharPtr)-1]);
 }
-int DC_LENGTH(char * opcodeCharPtr, char* operand1CharPtr){//example: H'25,26,27'
+int dcLength(char * opcodeCharPtr, char* operand1CharPtr){//example: H'25,26,27'
 	//printf("In DC_DLENGTH with opcode = %s and operand1 = %s\n", opcodeCharPtr, operand1CharPtr);
-	int len = DLENGTH(operand1CharPtr[0]);
+	int len = dLength(operand1CharPtr[0]);
 	int totalLen = len;
 	while(*operand1CharPtr){
 		if(*operand1CharPtr == ',')
@@ -37,17 +37,18 @@ int DC_LENGTH(char * opcodeCharPtr, char* operand1CharPtr){//example: H'25,26,27
 	}
 	return totalLen;
 }
-int LTORG(){
-//incomplete
+int LitAss(){
+	
 }
 struct potNode potTable[] = {
 	{"equ", NULL},
 	{"start", NULL},
 	{"using", NULL},
-	{"end", NULL},
-	{"ltorg", &LTORG},
-	{"dc", &DC_LENGTH},//Define Constant
-	{"ds", &DS_LENGTH}//Define Storage
+	{"drop", NULL},
+	{"end", NULL/*&LitAss*/},
+	{"ltorg", NULL/*&LitAss*/},
+	{"dc", &dcLength},//Define Constant
+	{"ds", &dsLength}//Define Storage
 };
 
 int FindInPOT(char *opcodeCharPtr, char* operand1CharPtr){
