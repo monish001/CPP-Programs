@@ -20,24 +20,22 @@ void putPixelAllQuaters(const point center, const int x, const int y, int color)
 	putpixel(ROUND(-x+center.x), ROUND(-y+center.y), color);
 }
 //Mid-point ellipse Algorithm
-//There is some bug(s) present in this function
 void ellipseMidPoint(const point center, const point radius, const int color){
 	int x=0, y = radius.y, a=radius.x, b=radius.y;
-	int a2 = a*a, b2 = b*b;
-	float p = b2 - a2*b + a2/(float)4;
+	long a2 = a*a, b2 = b*b;
+	double p = b2 - a2*b + a2/(double)4;
 	while(b2*x < a2*y){
 		putPixelAllQuaters(center, x, y, color);
 		if(p<0){
-			p+= 2*b2*x + b2;
+			;
 		}else{
 			y--;
-			p+= 2*b2*x + b2 - 2*a2*y;
+			p+= -2*a2*y;
 		}
+		p+= 2*b2*x + b2;
 		x++;
 	}
-	//x = a2*a2/(float)(a2+b2);
-	//y = b2*b2/(float)(a2+b2);
-	p = b2*(x+.5)*(x+.5) + a2*(y-1)*(y-1) - a2 - b2;
+	p = b2*(x+.5)*(x+.5) + a2*(y-1)*(y-1) - a2 * b2;
 	while(y>=0){
 		putPixelAllQuaters(center, x, y, color);
 		if(p>0){
