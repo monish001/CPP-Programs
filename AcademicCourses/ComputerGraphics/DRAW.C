@@ -77,3 +77,29 @@ void circleBresenham(const point center, const int r, const int color){
 	}
 
 }
+void _boundaryFill4(const int x, const int y, const int boundaryColor, const int newColor){
+	if(getpixel(x, y)==boundaryColor || getpixel(x,y)==newColor || x<0 || y<0 || x>getmaxx() || y>getmaxy())
+		return;
+	delay(1);
+	putpixel(x,y,newColor);
+	_boundaryFill4(x-1, y, boundaryColor,newColor);
+	_boundaryFill4(x+1, y, boundaryColor,newColor);
+	_boundaryFill4(x, y-1, boundaryColor,newColor);
+	_boundaryFill4(x, y+1, boundaryColor,newColor);
+}
+void boundaryFill4(const point p, const int boundaryColor, const int newColor){
+	_boundaryFill4(p.x, p.y, boundaryColor, newColor);
+}
+void _floodFill4(const int x, const int y, const int defaultColor, const int fillColor){
+	if(getpixel(x, y)!=defaultColor || getpixel(x,y)==fillColor || x<0 || y<0 || x>getmaxx() || y>getmaxy())
+		return;
+	delay(5);
+	putpixel(x,y,fillColor);
+	_floodFill4(x-1, y, defaultColor,fillColor);
+	_floodFill4(x+1, y, defaultColor,fillColor);
+	_floodFill4(x, y-1, defaultColor,fillColor);
+	_floodFill4(x, y+1, defaultColor,fillColor);
+}
+void floodFill4(const point p ,const int defaultColor, const int fillColor){
+	_floodFill4(p.x, p.y, defaultColor, fillColor);
+}
