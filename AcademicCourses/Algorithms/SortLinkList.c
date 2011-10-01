@@ -1,4 +1,7 @@
-//FileName: SortLinkList.c
+/* FileName: SortLinkList.c
+ * Question: Write a method to combine two two sorted linked list into one in sorted form with out using temporary Node.
+ * void mergeSorted(Node* list1,Node* list2)
+ */
 #include<stdio.h>
 typedef struct node node;
 typedef int T;
