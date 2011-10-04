@@ -36,7 +36,7 @@ void printTable(int table[][4], const int startState, const int endState, const 
         cout<<"\n";
 	}
 }
-void PostfixToNFA(string re, int table[][4], vector<int>& banStates, int& endState){//input: postfix expression
+void PostfixToNFA(string re, int table[][4], vector<int>& banStates, int& startState, int& endState){//input: postfix expression
 
 	//table[i][j] : ith node with input as jth symbol. j =0 means a, =1 b, =2,3 epsilon
 	memset(table, -1, 50*4*sizeof(int));
@@ -90,6 +90,6 @@ void PostfixToNFA(string re, int table[][4], vector<int>& banStates, int& endSta
 				stk.push(b);	}
 		}
 	}
-	int startState = stk.top().start; endState = stk.top().end;
+	startState = stk.top().start; endState = stk.top().end;
 	printTable(table, startState, endState, banStates);
 }

@@ -1,6 +1,10 @@
 /* FileName: SortLinkList.c
- * Question: Write a method to combine two two sorted linked list into one in sorted form with out using temporary Node.
+ * Question1: Write a method to combine two two sorted linked list into one in sorted form with out using temporary Node.
  * void mergeSorted(Node* list1,Node* list2)
+ * Question2: Sort using Insertion Sort
+ * node* insertionSort(node* head)
+ * Question3: Given a singly linked list, swap every two elements (e.g. a->b->c->d->e->f->null should become b->a->d->c->f->e->null).
+ * node* swapAdjacentNodes(node* head)
  */
 #include<stdio.h>
 typedef struct node node;
@@ -88,7 +92,7 @@ node* _insert(node *head, node *aNode){//head is never NULL
 	head->next = aNode;
 	return start;
 }
-node* sort(node* head){//insertion sort
+node* insertionSort(node* head){//insertion sort
 	if(head==NULL || head->next == NULL)
 		return head;
 	node* tmpHead = head;
@@ -102,19 +106,44 @@ node* sort(node* head){//insertion sort
 	}
 	return head;
 }
-
+int _swapNextTwoNodes(node* head){//swaps nodes pointed by head->next and head->next->next
+	if(head==NULL || head->next==NULL || head->next->next == NULL)
+		return 0;
+	node* tmp=head->next, *tmp2 = head->next->next;
+	head->next = tmp2;
+	tmp->next = tmp2->next;
+	tmp2->next = tmp;
+	return 1;
+}
+node* swapAdjacentNodes(node* head){
+	if(head == NULL || head->next == NULL)
+		return head;
+	node* tmp = head->next;
+	//swap first two nodes and make head point to 2nd node in list after the swap
+	head->next = tmp->next;
+	tmp->next = head;
+	while(_swapNextTwoNodes(head))
+		head = head->next->next;
+	return tmp;
+}
 int main(){
-	puts("Press 0 to exit. Enter positive values for link list 1");
+/*	puts("Press 0 to exit. Enter positive values for link list 1");
 	node* l1 = createSinglyLinkList();
-	l1=sort(l1);
+	l1=insertionSort(l1);
 	printLinkedList(l1);
 
 	puts("Press 0 to exit. Enter positive values for link list 2");
 	node* l2 = createSinglyLinkList();
-	l2=sort(l2);
+	l2=insertionSort(l2);
 	printLinkedList(l2);
 	
-	printLinkedList(mergeSorted(l1, l2));
+	printLinkedList(mergeSorted(l1, l2));*/
+
+
+	puts("Press 0 to exit. Enter positive values for link list");
+	node* l3 = createSinglyLinkList();
+	printLinkedList(swapAdjacentNodes(l3));
+	
 	getch();
 	return 0;
 }

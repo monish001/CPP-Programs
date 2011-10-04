@@ -10,9 +10,10 @@ int main(){
 	cout<<"Postfix: "<<regex_postfix<<"\n";
 	int table[50][4];
 	vector<int> extraStates;
-	int endState;
-	PostfixToNFA(regex_postfix+"#" , table, extraStates, endState);
-	NfaToDfa(table, extraStates, endState);
+	int endState, startState;
+	PostfixToNFA(regex_postfix+"#" , table, extraStates, startState, endState);
+//	findClosureForEachState(table, extraStates, endState);
+	NfaToDfa(table, extraStates, endState, startState);
 	fflush(stdin);
 	getchar();
 	return 0;
