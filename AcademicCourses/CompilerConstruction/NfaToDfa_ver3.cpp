@@ -5,7 +5,6 @@
 //4. Precedence of * (Kleene-Closure) is higher and other operators ( / . ) have same precedence.
 
 #include<iostream>
-#include"InfixToPostfixForRE.cpp" 
 #include<stack>
 #include<cstdlib>
 using namespace std;
@@ -91,16 +90,4 @@ void solve(string re){//input: postfix expression
         cout<<"\n";
 	}
 }
-int main(){
-	string in;
-	cin>>in;
-	int i=0;
 
-	string regex_postfix = convert(in + ')', i);
-	cout<<"Postfix: "<<regex_postfix<<"\n";
-	solve(regex_postfix+"#" );
-	
-	fflush(stdin);
-	getchar();
-	return 0;
-}

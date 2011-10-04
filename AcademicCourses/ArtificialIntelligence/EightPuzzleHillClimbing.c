@@ -47,38 +47,44 @@ int chooseBest(int a[]){
 	if(posSpace/3 != 0){//empty block not in first row
 		b[posSpace] ^= b[posSpace-3] ^= b[posSpace] ^= b[posSpace-3]; //swap
 		bh = heuristic(b);
+		if(pres_h > bh){
+			memcpy(a, b, 9*sizeof(int));
+			return 1;
+		}
 	}
 	if(posSpace/3 != 2){//empty block not in last row
 		c[posSpace] ^= c[posSpace+3] ^= c[posSpace] ^= c[posSpace+3]; //swap
 		ch = heuristic(c);
 		//printf("heuristic value to move  up: %d", );
+		if(pres_h > ch){
+			memcpy(a, c, 9*sizeof(int));
+			return 1;
+		}
 	}
 	if(posSpace%3 != 0){//empty block not in first col
 		d[posSpace] ^= d[posSpace-1] ^= d[posSpace] ^= d[posSpace-1]; //swap
 		dh = heuristic(d);
+		if(pres_h > dh){
+			memcpy(a, d, 9*sizeof(int));
+			return 1;
+		}
 	}
 	if(posSpace%3 != 2){//empty block not in last col
 		e[posSpace] ^= e[posSpace+1] ^= e[posSpace] ^= e[posSpace+1]; //swap
 		eh = heuristic(e);
+		if(pres_h > eh){
+			memcpy(a, e, 9*sizeof(int));
+			return 1;
+		}
 	}
-	int min_h = min(min(bh, ch), min(dh, eh));
-	if(pres_h < min_h)
-		return 0;//no better option available
-
-	if(min_h == bh)
-		memcpy(a, b, 9*sizeof(int));
-	else if(min_h==ch)
-		memcpy(a, c, 9*sizeof(int));
-	else if(min_h==dh)
-		memcpy(a, d, 9*sizeof(int));
-	else
-		memcpy(a, e, 9*sizeof(int));
-
-	return 1;
+	return 0;//no better option available
 }
 int main(){
 //	int a[] = {1,2,4,6,8,3,0,7,5};
-	int a[] = {0,2,4, 1,8,3, 6,7,5};
+//	int a[] = {0,2,4, 1,8,3, 6,7,5};
+	int a[] = {	1,4,0,
+				3,7,2, 
+				6,8,5};
 	printBoard(a);
 	int NoBetterStateExists = 0;
 	while(heuristic(a) != 0){

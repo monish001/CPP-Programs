@@ -40,8 +40,8 @@ int _numDigits(long long num){
 	}
 	return count;
 }
-long sqrt1(double aDouble){
-	aDouble = aDouble * 1e14;
+double sqrt1(double aDouble){
+	aDouble = aDouble * 1e12;
 	long long aLL = aDouble;
 	assert(aLL >=0);
 	long ans=0;
@@ -60,14 +60,14 @@ long sqrt1(double aDouble){
 		if(/*if divisible*/newDigit != 0)
 			val -= div * newDigit;
 	}
-	return ans;
+	return ((double)ans)*1e-6;
 }
 int main(){
-	printf("sqrt1(5) = \t%ld\n", sqrt1(5));
-	printf("sqrt1(26) = \t%ld\n", sqrt1(26));
-	printf("sqrt1(123.45) = %ld\n", sqrt1(123.45));
-	printf("sqrt1(12) = \t%ld\n", sqrt1(12));
-	printf("sqrt1(1250) = \t%ld\n", sqrt1(1250));
+	printf("sqrt1(5) = \t%lf\n", sqrt1(5));
+	printf("sqrt1(26) = \t%lf\n", sqrt1(26));
+	printf("sqrt1(123.45) = %lf\n", sqrt1(123.45));
+	printf("sqrt1(12) = \t%lf\n", sqrt1(12));
+	printf("sqrt1(1250) = \t%lf\n", sqrt1(1250));
 	getch();
 	return 0;
 }

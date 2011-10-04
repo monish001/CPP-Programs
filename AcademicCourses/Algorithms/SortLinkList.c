@@ -42,9 +42,9 @@ node* createSinglyLinkList(){
 node* mergeSorted(node*l1, node*l2){//assuming lists are ascending
 	node *ans;
 	if(l1==NULL){
-		return l2;
+		ans = l1 = l2;
 	}else if(l2==NULL){
-		return l1;
+		ans = l2 = l1;
 	}else{
 		node *ptr;
 		if(l1->data > l2->data){
