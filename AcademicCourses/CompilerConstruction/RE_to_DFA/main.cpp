@@ -5,7 +5,10 @@
 /* There are bugs in NfaToDfa part.
  * Test cases
  * (a/b)*.a.b.b
- * a**
+ * BUG: 
+        Input: a** 
+        Input: (a*.b*)* 
+        Output: Program Crashes
  */
 int main(){
 	string in;
