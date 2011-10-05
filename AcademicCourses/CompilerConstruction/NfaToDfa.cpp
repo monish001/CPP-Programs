@@ -56,45 +56,11 @@ set<int> _findNextDFAState(map< set<int>, int>& statesDFA){
 	set<int> tmp;
 	return tmp;
 }
-void _printDFA( map< set<int>,pair<set<int>,set<int> > >& moves, map<set<int>, int>& statesDFA){
-	cout<<"\nDFA:\nState\tInput a\tInput b\n";
-	for(map<set<int>, int>::iterator it=statesDFA.begin(); it!=statesDFA.end(); it++){
-		cout<<(*it).second<<"\t";
-        cout<<statesDFA[(moves[(*it).first]).first]<<"\t";
-        cout<<statesDFA[(moves[it->first]).second]<<"\n";
-	}
-}
-vector<int> _getCorrDFAStates(map<set<int>, int>& statesDFA, const int& startState){
-	vector<int> aVector;
-	for(map<set<int>, int>::iterator it=statesDFA.begin(); it!=statesDFA.end(); it++){
-		if((it->first).find(startState) != (it->first).end())//startState present in it->first
-			aVector.push_back(statesDFA[it->first]);
-	}
-	return aVector;
-}
-void _printStartState(map<set<int>, int>& statesDFA, const int& startState){
-	vector<int> start = _getCorrDFAStates(statesDFA, startState);
-	if(start.size()==1){
-		cout<<"Start state is "<<start[0]<<"\n";
-		return;
-	}
-	cout<<"Start states are ";
-	for(int i=0; i<start.size(); i++)
-		cout<<start[i]<<" ";
-}
-void _printEndState(map<set<int>, int>& statesDFA, const int& endState){
-	vector<int> end = _getCorrDFAStates(statesDFA, endState);
-	if(end.size()==1){
-		cout<<"End state is "<<end[0]<<"\n";
-		return;	
-	}
-	cout<<"End states are ";
-	for(int i=0; i<end.size(); i++)
-		cout<<end[i]<<" ";
-}
-void NfaToDfa(const int table[][4], const vector<int>& banStates, const int& endState, const int& startState){
-	map<set<int>, pair<set<int>, set<int> > > moves;
-	map<set<int>, int> statesDFA;
+/*
+ * Converts the NFA in 'table' to DFA. DFA is stored in moves and statesDFA.
+ */
+void NfaToDfa(const int table[][4], const vector<int>& banStates, const int& startState, 	map<set<int>, pair<set<int>, set<int> > >& moves, map<set<int>, int>& statesDFA){
+	int stateNum = 1;
 	set<int> aSet = _closure(startState, table);
 	statesDFA[aSet] = 0;
 	do{
@@ -108,22 +74,19 @@ void NfaToDfa(const int table[][4], const vector<int>& banStates, const int& end
 
 		moves[aSet] = make_pair(intSet, intSet2);
 		
-		statesDFA[aSet] = 1;//done
+		statesDFA[aSet] = stateNum++;//done
 		aSet = _findNextDFAState(statesDFA);
 	}while(aSet.size() != 0);
 	
 	
-	{
+/*	{
 		int i=1;//number the new states
 		for(map<set<int>, int>::iterator it=statesDFA.begin(); it!=statesDFA.end(); it++)
 			if((it->first).size() != 0)
 				it->second = i++;
 			else it->second = -1;
 	}
-	
-	_printStartState(statesDFA, startState);
-	_printEndState(statesDFA, endState);
-	_printDFA( moves, statesDFA);
+*/
 	
 }
 //int main(){}

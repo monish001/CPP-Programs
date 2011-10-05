@@ -4,6 +4,7 @@
 //2. Concatenation OR Dot operator is explicitly entered.
 //3. Expression is correct
 //4. Precedence of * (Kleene-Closure) is higher and other operators ( / . ) have same precedence.
+//5. Expressions having two consecutive * are invalid.
 
 #include<stack>
 #include<string>
