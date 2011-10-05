@@ -22,7 +22,7 @@ set<int> _closure(const set<int>& myset, const int table[][4]){
 	}
 	return aSet;
 }
-void findClosureForEachState(int table[][4], vector<int>& banStates, const int& endState){
+void findClosureForEachNFAState(int table[][4], vector<int>& banStates, const int& endState){
 	for(int node =0 ; node <= endState; node++){
 		if(bsearch(&node, &banStates[0], banStates.size(), sizeof(int), compareints) != NULL)//if node exists in banStates
 			continue;
@@ -49,29 +49,81 @@ set<int> _moveAndReturnClosure(set<int> aSet, const int input, const int table[]
 /*
  * returns next unexplored DFA state
  */
-set<int> _findNextDFAState(map< set<int>, bool>& statesDFA){
-	 //it;
-	for(map< set<int>, bool>::iterator it=statesDFA.begin(); it!=statesDFA.end(); it++)
+set<int> _findNextDFAState(map< set<int>, int>& statesDFA){
+	for(map< set<int>, int>::iterator it=statesDFA.begin(); it!=statesDFA.end(); it++)
 	if(it->second == false)
 		return it->first;
 	set<int> tmp;
 	return tmp;
 }
+void _printDFA( map< set<int>,pair<set<int>,set<int> > >& moves, map<set<int>, int>& statesDFA){
+	cout<<"\nDFA:\nState\tInput a\tInput b\n";
+	for(map<set<int>, int>::iterator it=statesDFA.begin(); it!=statesDFA.end(); it++){
+		cout<<(*it).second<<"\t";
+        cout<<statesDFA[(moves[(*it).first]).first]<<"\t";
+        cout<<statesDFA[(moves[it->first]).second]<<"\n";
+	}
+}
+vector<int> _getCorrDFAStates(map<set<int>, int>& statesDFA, const int& startState){
+	vector<int> aVector;
+	for(map<set<int>, int>::iterator it=statesDFA.begin(); it!=statesDFA.end(); it++){
+		if((it->first).find(startState) != (it->first).end())//startState present in it->first
+			aVector.push_back(statesDFA[it->first]);
+	}
+	return aVector;
+}
+void _printStartState(map<set<int>, int>& statesDFA, const int& startState){
+	vector<int> start = _getCorrDFAStates(statesDFA, startState);
+	if(start.size()==1){
+		cout<<"Start state is "<<start[0]<<"\n";
+		return;
+	}
+	cout<<"Start states are ";
+	for(int i=0; i<start.size(); i++)
+		cout<<start[i]<<" ";
+}
+void _printEndState(map<set<int>, int>& statesDFA, const int& endState){
+	vector<int> end = _getCorrDFAStates(statesDFA, endState);
+	if(end.size()==1){
+		cout<<"End state is "<<end[0]<<"\n";
+		return;	
+	}
+	cout<<"End states are ";
+	for(int i=0; i<end.size(); i++)
+		cout<<end[i]<<" ";
+}
 void NfaToDfa(const int table[][4], const vector<int>& banStates, const int& endState, const int& startState){
-	map<set<int>, bool> statesDFA;
+	map<set<int>, pair<set<int>, set<int> > > moves;
+	map<set<int>, int> statesDFA;
 	set<int> aSet = _closure(startState, table);
 	statesDFA[aSet] = 0;
 	do{
 		set<int> intSet = _moveAndReturnClosure(aSet, 0, table);//Input symbol is a
-		if( (statesDFA.find(intSet))==statesDFA.end() )//tmp not already present in statesDFA
+		if( intSet.size()!=0 && statesDFA.find(intSet)==statesDFA.end() )//set not already present in statesDFA
 			statesDFA[intSet]=0;
 		
-		intSet = _moveAndReturnClosure(aSet, 1, table);//Input symbol is a
-		if( (statesDFA.find(intSet))==statesDFA.end() )//tmp not already present in statesDFA
-			statesDFA[intSet]=0;
+		set<int> intSet2 = _moveAndReturnClosure(aSet, 1, table);//Input symbol is a
+		if( (intSet2.size()!=0) && statesDFA.find(intSet2)==statesDFA.end() )//set not already present in statesDFA
+			statesDFA[intSet2]=0;
 
+		moves[aSet] = make_pair(intSet, intSet2);
+		
 		statesDFA[aSet] = 1;//done
 		aSet = _findNextDFAState(statesDFA);
 	}while(aSet.size() != 0);
 	
+	
+	{
+		int i=1;//number the new states
+		for(map<set<int>, int>::iterator it=statesDFA.begin(); it!=statesDFA.end(); it++)
+			if((it->first).size() != 0)
+				it->second = i++;
+			else it->second = -1;
+	}
+	
+	_printStartState(statesDFA, startState);
+	_printEndState(statesDFA, endState);
+	_printDFA( moves, statesDFA);
+	
 }
+//int main(){}

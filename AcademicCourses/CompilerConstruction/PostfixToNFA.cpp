@@ -35,6 +35,7 @@ void printTable(int table[][4], const int startState, const int endState, const 
 			cout<<", "<<table[node][3];
         cout<<"\n";
 	}
+	cout<<"\n";
 }
 void PostfixToNFA(string re, int table[][4], vector<int>& banStates, int& startState, int& endState){//input: postfix expression
 

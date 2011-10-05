@@ -1,6 +1,10 @@
 #include"InfixToPostfixForRE.cpp" 
 #include"PostfixToNFA.cpp" 
 #include"NfaToDfa.cpp" 
+/* There are bugs in NfaToDfa part.
+ * Test cases
+ * a**
+ */
 int main(){
 	string in;
 	cin>>in;
@@ -12,7 +16,7 @@ int main(){
 	vector<int> extraStates;
 	int endState, startState;
 	PostfixToNFA(regex_postfix+"#" , table, extraStates, startState, endState);
-//	findClosureForEachState(table, extraStates, endState);
+	findClosureForEachNFAState(table, extraStates, endState);
 	NfaToDfa(table, extraStates, endState, startState);
 	fflush(stdin);
 	getchar();
