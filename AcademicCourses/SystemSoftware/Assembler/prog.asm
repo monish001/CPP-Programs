@@ -1,8 +1,4 @@
 test start
-	 ds 100c
-	 ds 100h
-	 ds 100f
-	 ds 100d
 begin balr 15,0
 	 using begin+2,15
 	 sr 4,4
@@ -10,9 +6,9 @@ begin balr 15,0
 loop l 2,data(4)
 	 a 2,=f'49'
 	 st 2,data(4)
+	 ltorg
 	 a 4,=f'4'
 	 bct 3,*-16
 	 br 14
-	 ltorg
 data dc f'1,3,3,3,3,4,5,9,0'
 	 end

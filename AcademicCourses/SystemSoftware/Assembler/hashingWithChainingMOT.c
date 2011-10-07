@@ -20,8 +20,11 @@ unsigned int hashMOT(char *p){//form hash value from string s
 struct nlist* lookupInMOT(char *s){
 	struct nlist* np;
 	for(np = motTable[hashMOT(s)]; np!=NULL; np = np->next)
-		if(!strcmp(s, np->opcode))
+		if(!strcmp(s, np->opcode)){
+			printTimeToLog(); 
+			fprintf(logFile, "Op-Code %s found having length=%d\n", np->opcode, np->length);
 			return np; //found
+		}
 	return NULL; //not found
 }
 char *strCopy(char const *s){//allocates memory for the new string and return its pointer
@@ -48,6 +51,7 @@ struct nlist* installInMOT(char *opcode_name, int len){//install: put (opcode_na
 		motTable[hashval] = np;
 	}else//found
 		np->length = len;
+
 	return np;
 }
 

@@ -1,6 +1,6 @@
 
 #define ST_HASHSIZE 41 //prime number
-enum relocation{NIL, ABS, RELOC};
+enum relocation{NIL, ABS, REL};
 struct symbolList{
 	struct symbolList *next;   
 	char* symName;
@@ -48,6 +48,7 @@ struct symbolList* STSTO(char const* const symbolNameCharPtr, const int lcInt, c
 	np->lcValue = lcInt;
 	np->length=len;//datatype length
 	np->reloc=aRelocation;
+	printTimeToLog(); fprintf(logFile, "Symbol %s added to ST with LC = %d, length=%d, A/R=%c\n", np->symName, np->lcValue, np->length, ((np->reloc==REL)?('R'):('A')));
 	return np;
 }
 
@@ -64,7 +65,7 @@ void deleteST(){
 	}
 }
 /*
- *Evaluates an arithematic expression assuming * has value lcInt
+ * Evaluates an arithematic expression assuming * has value lcInt
  */
 int EVAL(char *operand1, int lcInt){
 	//incomplete

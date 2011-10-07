@@ -1,8 +1,10 @@
 //filename: LiteralTable.c
+#define MAX_LIT_STACK 100
 #define LIT_HASHSIZE 41
 /*
  * Finds hash value corresponding to char* p
  */
+
 unsigned int hashLit(char const *ptr){//form hash value from string s
 	int ans = strlen(ptr);
 	for(; *ptr; ptr++)
@@ -18,6 +20,8 @@ struct litRecord{
 	enum relocation reloc;
 	struct litRecord *next;
 };
+static struct litRecord *LitStack[MAX_LIT_STACK];
+static int litStackTop = -1;
 static struct litRecord *litHashTable[LIT_HASHSIZE]; /*pointer table*/ //Static means automatically initialises as NULL ptrs
 struct litRecord* lookupInLit(const char * const key){
 	struct litRecord* np;
@@ -59,13 +63,12 @@ struct litRecord* installInLit(const char* const literalName, short len, int val
 	return np;
 }
 
-void addLiteral(const char *const litCharPtr){
-	//puts(litCharPtr);
-	installInLit(litCharPtr, -1, -1, NIL);
-}
-/*void LitAss(){
 
-}*/
+void addLiteral(const char *const litCharPtr){
+	printTimeToLog();
+	fprintf(logFile, "Literal %s added.\n", litCharPtr);
+	LitStack[++litStackTop] = installInLit(litCharPtr, -1, -1, NIL);
+}
 void deleteLT(){
 	int i;
 	for(i=0; i<LIT_HASHSIZE; i++){
