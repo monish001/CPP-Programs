@@ -55,7 +55,7 @@ struct nlist* np;
 	//found in POT
 	//add Symbol to ST
 		if(strlen(label)>0){
-			if(strcmp(opcode, "equ")==0){//Example: 1.setup	equ		*			2.database	equ		13 //Forward referencing can be implemented using a stack
+			if(strcmp(opcode, "equ")==0){//Example: 1.setup	equ		*	2.database	equ		13   3. A equ B//Forward referencing can be implemented using a stack
 			//1 is Relocatable but 2. is abs
 				int value = 1;//EVAL(operand1, lcInt);
 				STSTO(label, value, 1, (enum relocation)((strchr(operand1, '*')==NULL)?(ABS):(REL))); //if * is not present then Absolute

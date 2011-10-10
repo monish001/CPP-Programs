@@ -1,4 +1,4 @@
-#include"CLIP.h"
+#include"CLIP.H"
 #define ACCEPT(a, b) (!(a|b))
 #define REJECT(a, b) (a&b)
 #define LEFT 0x1

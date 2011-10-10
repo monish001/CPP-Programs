@@ -1,4 +1,4 @@
-#include"draw.h"
+#include"DRAW.H"
 //Digital Differencial Analyzer
 void lineDDA(const point p1, const point p2, const int color){
 	int dx = p2.x-p1.x, dy = p2.y-p1.y;
