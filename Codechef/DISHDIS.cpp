@@ -1,11 +1,13 @@
+//WRONG ANSWER
 //filename: DISHDIS.cpp
 #include<iostream>
 #include<fstream>
 #include<cassert>
 #include<cstring>
-
+#define MOD (1000000007LL)
 using namespace std;
-typedef unsigned long long ll;
+typedef long long ll;
+int n;
 class poly{
 public:
 	poly(const int nn):degree(nn){
@@ -22,8 +24,9 @@ public:
 		
 		for(int i=0; i<= this->degree; i++){
 			for(int j=0; j<=deg2; j++){
+				if(i+j > n) continue;
 				p[i+j] += getCoeff(i) * p2.getCoeff(j);
-				p[i+j] %= (1000000007LL);
+				p[i+j] %= MOD;
 			}
 		}
 		return (new poly(degree + deg2, p));
@@ -51,17 +54,17 @@ int main(){
 	//ifstream cin("in.txt");
 	for(cin>>t ; t>0; t--){
 		int min, cap;
-		int n;//num of dishes
+		//int n;//num of dishes
 		int m;//#chefs
 		cin>>n>>m;
 		poly *ans = new poly(0);
-		bool isPossible=1;
+		bool isPossible=true;
 		for(int mm=0; mm<m; mm++){
 			cin>>min>>cap;
 			cap -= min;
 			n -= min;
 			if(n<0 || cap <0){
-				isPossible = 0;
+				isPossible = false;
 				break;
 			}
 			poly curChef(cap);
@@ -69,7 +72,7 @@ int main(){
 			delete ans;
 			ans = tmp;
 		}
-		cout<< ((isPossible)?((ans->getCoeff(n))%(1000000007LL)):(0));
+		cout<< ((isPossible)?((ans->getCoeff(n))%MOD):(0));
 		cout<<"\n";
 		delete ans;
 	}
