@@ -1,4 +1,18 @@
-#include"DRAW.H"
+#define ROUND(a) (int)(a+0.5)
+#include<graphics.h>
+typedef struct point{int x; int y;} point;
+
+void _boundaryFill4(const int x, const int y, const int boundaryColor, const int newColor);
+void _floodFill4(const int x, const int y, const int defaultColor, const int fillColor);
+void lineDDA(const point p1, const point p2, const int color);
+void circleBresenham(const point center, const int r, const int color);
+void ellipseMidPoint(const point center, const point radius, const int color);
+
+void boundaryFill4(const point aPoint, const int boundaryColor, const int newColor);
+void floodFill4(const point p ,const int defaultColor, const int fillColor);
+void putPixelAllOctants(const point center, const int x, const int y, int color);
+void putPixelAllQuaters(const point center, const int x, const int y, int color);
+
 //Digital Differencial Analyzer
 void lineDDA(const point p1, const point p2, const int color){
 	int dx = p2.x-p1.x, dy = p2.y-p1.y;
@@ -19,38 +33,7 @@ void putPixelAllQuaters(const point center, const int x, const int y, int color)
 	putpixel(ROUND(x+center.x), ROUND(-y+center.y), color);
 	putpixel(ROUND(-x+center.x), ROUND(-y+center.y), color);
 }
-//Mid-point ellipse Algorithm
-void ellipseMidPoint(const point center, const point radius, const int color){
-	int x=0, y = radius.y, a=radius.x, b=radius.y;
-	long a2 = a*a, b2 = b*b;
-	double p = b2 - a2*b + a2/(double)4;
-	while(b2*x < a2*y){
-		putPixelAllQuaters(center, x, y, color);
-		if(p<0){
-			;
-		}else{
-			y--;
-			p+= -2*a2*y;
-		}
-		p+= 2*b2*x + b2;
-		x++;
-	}
-	p = b2*(x+.5)*(x+.5) + a2*(y-1)*(y-1) - a2 * b2;
-	while(y>=0){
-		putPixelAllQuaters(center, x, y, color);
-		if(p>0){
-			p+= -2*a2*y + a2;
-		}else{
-			x++;
-			p+= -2*a2*y + a2 + 2*b2*x;
-		}
-		y--;
-	}
-}
-void putPixelAllOctants(const point center, const int x, const int y, int color){
-	putPixelAllQuaters(center, x, y, color);
-	putPixelAllQuaters(center, y, x, color);
-}
+
 //Mid-point circle algorithm
 void circleBresenham(const point center, const int r, const int color){
 //if point P is (x+1,y), outer point
@@ -86,6 +69,39 @@ void _boundaryFill4(const int x, const int y, const int boundaryColor, const int
 	_boundaryFill4(x+1, y, boundaryColor,newColor);
 	_boundaryFill4(x, y-1, boundaryColor,newColor);
 	_boundaryFill4(x, y+1, boundaryColor,newColor);
+}
+
+//Mid-point ellipse Algorithm
+void ellipseMidPoint(const point center, const point radius, const int color){
+	int x=0, y = radius.y, a=radius.x, b=radius.y;
+	long a2 = a*a, b2 = b*b;
+	double p = b2 - a2*b + a2/(double)4;
+	while(b2*x < a2*y){
+		putPixelAllQuaters(center, x, y, color);
+		if(p<0){
+			;
+		}else{
+			y--;
+			p+= -2*a2*y;
+		}
+		p+= 2*b2*x + b2;
+		x++;
+	}
+	p = b2*(x+.5)*(x+.5) + a2*(y-1)*(y-1) - a2 * b2;
+	while(y>=0){
+		putPixelAllQuaters(center, x, y, color);
+		if(p>0){
+			p+= -2*a2*y + a2;
+		}else{
+			x++;
+			p+= -2*a2*y + a2 + 2*b2*x;
+		}
+		y--;
+	}
+}
+void putPixelAllOctants(const point center, const int x, const int y, int color){
+	putPixelAllQuaters(center, x, y, color);
+	putPixelAllQuaters(center, y, x, color);
 }
 void boundaryFill4(const point p, const int boundaryColor, const int newColor){
 	_boundaryFill4(p.x, p.y, boundaryColor, newColor);

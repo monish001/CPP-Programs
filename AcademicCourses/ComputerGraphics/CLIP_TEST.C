@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<conio.h>
 #include<math.h>
-#include"CLIP.H"
+#include"CLIP.C"
 #include<graphics.h>
 
 int main(){

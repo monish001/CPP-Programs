@@ -2,7 +2,7 @@
 #include<conio.h>
 #include<math.h>
 #include<graphics.h>
-#include"DRAW.H"
+#include"DRAW.C"
 int main(){
 	int gd = DETECT, gm;
 	point p1 = {100,100}, p2={325, 325}, radius={10,20};//try to tak it as long
