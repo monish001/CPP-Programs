@@ -66,7 +66,7 @@ void freeTree(node* root){
     freeTree(root->right);
     free(root);
 }
-node* findBST(node* root, int* length){//root is not null always
+node* findBST(node* root, int* length){//root is "not null" always
 	node *lbst=NULL, *rbst=NULL;
 	int lht=0, rht=0;
 	if(root->left != NULL)

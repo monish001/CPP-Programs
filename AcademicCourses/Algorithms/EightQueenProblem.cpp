@@ -1,4 +1,3 @@
-//INCOMPLETE YET
 //This is 8-queen problem program.
 /*
 void printSolution(string &rows){

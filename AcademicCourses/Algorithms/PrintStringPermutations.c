@@ -1,4 +1,5 @@
 //Filename: PrintStringPermutations.c
+//Running code: http://codepad.org/ouMGeCu3
 #include<stdio.h>
 void rotateLeft(char* s, int pos){
 	char tm = s[pos];

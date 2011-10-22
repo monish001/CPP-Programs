@@ -64,7 +64,7 @@ void isLucky(const string& origStr){
 	for(int i=0; i+4<len; i++){
 	string curStr(origStr);
 		int curCost = replaceWithLucky(i, curStr, origStr);
-		if( (curCost<minCost) || (curCost == minCost && strcmp(&bestStr[0], &curStr[0])) ){
+		if( (curCost<minCost) || (curCost == minCost && !strcmp(&bestStr[0], &curStr[0])) ){
 			minCost = curCost;
 			bestStr = curStr;
 		}

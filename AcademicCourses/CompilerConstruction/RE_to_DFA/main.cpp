@@ -23,7 +23,7 @@ int main(){
 	int endState, startState;
 	PostfixToNFA(regex_postfix+"#" , table, extraStates, startState, endState);
 //	findClosureForEachNFAState(table, extraStates, endState);
-	
+
 	map<set<int>, pair<set<int>, set<int> > > moves;
 	map<set<int>, int> statesDFA;
 
