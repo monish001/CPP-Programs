@@ -7,7 +7,8 @@
 
 void completeOperand(char* p1){
 	char *p2 = (char*)strtok(NULL, "\n");
-	p1[strlen(p1)] = ',';
+	if(p1[strlen(p1)-1] != '\'')
+		p1[strlen(p1)] = ',';
 }
 void tokenizeLine(char *str, FILE *fp){
 	static int lcInt;

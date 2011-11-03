@@ -10,5 +10,6 @@ loop l 2,data(4)
 	 a 4,=f'4'
 	 bct 3,*-16
 	 br 14
-data dc f'1,3,3,3,3,4,5,9,0'
+data dc f'10,7'
+data2 dc f'112'
 	 end

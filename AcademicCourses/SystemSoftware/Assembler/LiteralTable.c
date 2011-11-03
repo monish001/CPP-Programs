@@ -23,6 +23,20 @@ struct litRecord{
 static struct litRecord *LitStack[MAX_LIT_STACK];
 static int litStackTop = -1;
 static struct litRecord *litHashTable[LIT_HASHSIZE]; /*pointer table*/ //Static means automatically initialises as NULL ptrs
+
+//prints LT to fp
+void printLT(FILE* fp){
+	int i;
+	fprintf(fp, "Literal Length Value(LC) Relocation\n");
+	for(i=0; i<LIT_HASHSIZE; i++){
+		struct litRecord* np = litHashTable[i];
+		while(np!=NULL){
+			fprintf(fp, "%s\t%d\t%d\t%c\n", np->name, np->length, np->value, ((np->reloc == ABS)?'A':'R'));
+			np = np->next;
+		}
+	}
+}
+
 struct litRecord* lookupInLit(const char * const key){
 	struct litRecord* np;
 	for(np = litHashTable[hashLit(key)]; np!=NULL; np = np->next)

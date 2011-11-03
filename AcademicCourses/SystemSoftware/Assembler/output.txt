@@ -1,0 +1,45 @@
+Label Opcode Operand1 Operand2
+test start
+begin balr 15,0
+         using begin+2,15
+         sr 4,4
+         l 3,=f'10'
+loop l 2,data(4)
+         a 2,=f'49'
+         st 2,data(4)
+         ltorg
+         a 4,=f'4'
+         bct 3,*-16
+         br 14
+data dc f'10,7'
+data2 dc f'112'
+         end
+--------------------------
+Symbol Length Value(LC) Relocation
+data2   4       50      R
+loop    4       8       R
+data    4       42      R
+begin   2       0       R
+test    1       0       R
+
+Literal Length Value(LC) Relocation
+f'10'   4       28      R
+f'4'    4       56      R
+f'49'   4       24      R
+
+************** Pass One Complete **************
+  0 test start
+  0 begin balr 15 0
+  2      using begin+2 15
+  2      sr 4 4
+  4      l 3 =f'10'
+  8 loop l 2 data(4)
+ 12      a 2 =f'49'
+ 16      st 2 data(4)
+ 20      ltorg
+ 32      a 4 =f'4'
+ 36      bct 3 *-16
+ 40      br 14
+ 42 data dc f'10,7'
+ 50 data2 dc f'112'
+ 54      end

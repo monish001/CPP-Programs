@@ -11,6 +11,22 @@ struct symbolList{
 
 static struct symbolList *symbolTable[ST_HASHSIZE]; /*pointer table*/ //Static means automatically initialises as NULL ptrs
 
+
+/* 
+ * prints the ST to fp
+ */
+void printST(FILE* fp){
+	int i=0;
+	fprintf(fp, "Symbol Length Value(LC) Relocation\n");
+	for(i=0; i<ST_HASHSIZE; i++){
+		struct symbolList * np = symbolTable[i];
+		while(np!=NULL){
+			fprintf(fp, "%s\t%d\t%d\t%c\n", np->symName, np->length, np->lcValue, ((np->reloc == ABS)?'A':'R'));
+			np=np->next;
+		}
+	}
+}
+
 unsigned int hashST(char const *p){//form hash value from string s
 	int ans = strlen(p);
 	for(; *p; p++)
@@ -51,7 +67,6 @@ struct symbolList* STSTO(char const* const symbolNameCharPtr, const int lcInt, c
 	printTimeToLog(); fprintf(logFile, "Symbol %s added to ST with LC = %d, length=%d, A/R=%c\n", np->symName, np->lcValue, np->length, ((np->reloc==REL)?('R'):('A')));
 	return np;
 }
-
 void deleteST(){
 	int i;
 	for(i=0; i<ST_HASHSIZE; i++){

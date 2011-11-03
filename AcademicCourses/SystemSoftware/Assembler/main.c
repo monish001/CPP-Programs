@@ -8,14 +8,9 @@
 
 //EVAL() is remaining in Pass1
 #include <stdio.h>
-FILE *logFile;
-void printTimeToLog(){
-	time_t rawtime;
-	time ( &rawtime );
-	char *str = (char*)ctime (&rawtime);
-	str[strlen(str)-1] = '\0';
-	fprintf (logFile, "%s: ",  str);
-}
+
+//contains logFile details and other common utility functions
+#include "utility.c" 
 #include "AssemblerPass2.c"
 #include "AssemblerPass1.c"
 int main(){
@@ -50,7 +45,11 @@ int main(){
 	}while(1  &&  !feof(fp) );
 	printf("--------------------------\n");
 	fflush(logFile);
-	Pass2(out);
+	printST(stdout); puts("");
+	printLT(stdout); puts("");
+	printTimeToLog();fprintf(logFile, "************** Pass One Complete **************\n");
+	fprintf(stdout, "************** Pass One Complete **************\n");
+    Pass2(out);
 
 	deleteMOT();
 	deleteST();
@@ -62,3 +61,6 @@ int main(){
 
 	return 0;
 }
+
+
+
