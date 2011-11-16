@@ -36,20 +36,25 @@ int dcLength(const int lc, /*char * opcodeCharPtr,*/ char* operand1CharPtr){//ex
 	}
 	return totalLen;
 }
-extern int litStackTop;
+extern int litQueueFront;
 
 int LitAss(int lcInt, /*char * opcodeCharPtr,*/ char* operand1CharPtr){
 	int initLc = lcInt;
 	if(lcInt%8 != 0)
 		lcInt += 8-lcInt%8;
-	while(litStackTop!=-1){
-		struct litRecord* np = LitStack[litStackTop];
-		LitStack[litStackTop--] = NULL;
+	printTimeToLog(); fprintf(logFile, "Literal Count %d.\n", countLitQueue);
+	while(countLitQueue > 0){
+		struct litRecord* np = LitQueue[litQueueFront];
+		LitQueue[litQueueFront++] = NULL;
+		if(litQueueFront == MAX_LIT_QUEUE)
+			litQueueFront=0;
 		np->value = lcInt;
 		np->length = dLength(*(np->name));
 		printTimeToLog(); fprintf(logFile, "Literal %s allocated %d bytes of memory at LC=%d.\n", np->name, np->length, np->value);
 		lcInt += np->length;
 		np->reloc = REL;
+		
+		countLitQueue--;
 	}
 	return lcInt-initLc;
 }

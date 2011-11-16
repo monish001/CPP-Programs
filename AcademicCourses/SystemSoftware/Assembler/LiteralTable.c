@@ -1,5 +1,5 @@
 //filename: LiteralTable.c
-#define MAX_LIT_STACK 100
+#define MAX_LIT_QUEUE 100
 #define LIT_HASHSIZE 41
 /*
  * Finds hash value corresponding to char* p
@@ -20,8 +20,6 @@ struct litRecord{
 	enum relocation reloc;
 	struct litRecord *next;
 };
-static struct litRecord *LitStack[MAX_LIT_STACK];
-static int litStackTop = -1;
 static struct litRecord *litHashTable[LIT_HASHSIZE]; /*pointer table*/ //Static means automatically initialises as NULL ptrs
 
 //prints LT to fp
@@ -78,10 +76,22 @@ struct litRecord* installInLit(const char* const literalName, short len, int val
 }
 
 
+static struct litRecord *LitQueue[MAX_LIT_QUEUE];
+static int litQueueFront = 0;//latest element present to be dequeued
+static int litQueueBack = 0;//place for new item enqueue
+static int countLitQueue = 0;//number of elements in the queue
 void addLiteral(const char *const litCharPtr){
 	printTimeToLog();
-	fprintf(logFile, "Literal %s added.\n", litCharPtr);
-	LitStack[++litStackTop] = installInLit(litCharPtr, -1, -1, NIL);
+	if(countLitQueue < MAX_LIT_QUEUE){
+		fprintf(logFile, "Literal %s added.\n", litCharPtr);
+		LitQueue[litQueueBack++] = installInLit(litCharPtr, -1, -1, NIL);
+		if(litQueueBack == MAX_LIT_QUEUE)
+			litQueueBack=0;
+		countLitQueue++;
+	}else{
+		fprintf(logFile, "Literal %s NOT added due to queue overflow. Please increase queue size.\n", litCharPtr);
+		fprintf(stdout, "Literal %s NOT added due to queue overflow. Please increase queue size.\n", litCharPtr);
+	}
 }
 void deleteLT(){
 	int i;
