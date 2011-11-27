@@ -1,0 +1,87 @@
+;Iterative function to find factorial
+(defun factorial (n) (do (	(count n (- count 1))
+							(product n (* product (- count 1)))
+						 );initialisations and steps
+						 ((equal 1 count) (return product));test cond and return value
+					 )
+)
+
+;Recursive function to find factorial
+(defun factorial (n) 	
+				(cond 
+					((zerop n) 1)
+					(t (* n (factorial (- n 1))))
+				)
+)
+
+;recursion function which works like member()
+(defun 
+	memb 
+	(el list)
+	(cond
+		((null list) nil)
+		((equal el (car list)) list)
+		(t (memb el (cdr list)))
+	)
+)
+
+;Setting and retrieving attributes/properties
+(get 'monish 'sex)				; output: NIL
+(setf (get 'monish 'sex) 'male)	; output: SEX
+(get 'monish 'sex)				; output: MALE
+
+;Making an array
+(setf myarray (make-array '(5)))
+
+;array read
+(aref myarray 0)
+(aref myarray 4)
+
+;array write
+(setf (aref myarray 0) 'my)
+(setf (aref myarray 1) 'name)
+(setf (aref myarray 2) 'is)
+(setf (aref myarray 3) 'monish)
+
+;Variadic function to find average of variable number of arguments
+(defun average (&rest args)
+  (when args
+    (/ (apply #'+ args) (length args)
+	)
+  )
+)
+
+;Variadic function to find average of variable number of arguments
+(defun average (&rest args)
+  (cond
+	((null args) nil)
+  )
+  (setq ans 0)
+  (setq len (length args))
+  (loop 
+	(setq ans (+ ans (car args)))
+	(setq args (cdr args))
+	(cond ( (null args) (return (/ ans len ))))
+  )
+)
+
+;Variadic function to find average of variable number of arguments
+;Error: The variable COND is unbound.
+(defun average (&rest args)
+  (cond
+	((null args) (return nil))
+  )
+  (setq len (length args))
+  (do
+    (
+		(alist args (cad alist))
+		(ans 0 (+ ans (car alist)))
+	)
+	(cond 
+		((null alist) (return (/ ans len)))
+	)
+  )
+)
+
+;find length of a lists
+(length '(a b c))
