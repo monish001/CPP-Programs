@@ -7,6 +7,8 @@ loop l 2,data(4)
 	 a 2,=f'49'
 	 st 2,data(4)
 	 ltorg
+aSymbol equ loop
+bSymbol equ *
 	 a 4,=f'4'
 	 bct 3,*-16
 	 br 14

@@ -48,8 +48,9 @@ char *strCopy(char const *const s);//allocates memory for the new string and ret
 struct symbolList* STSTO(char const* const symbolNameCharPtr, const int lcInt, const int len, enum relocation aRelocation){//install: put (symbolNameCharPtr, lcInt) in symbolTable[]
 //return NULL for lack of memory
 	struct symbolList* np;
-	
+	printTimeToLog(); 
 	if( (np=lookupInST(symbolNameCharPtr)) ==NULL ){//not found
+		fprintf(logFile, "New Symbol %s. ", symbolNameCharPtr);
 		np = (struct symbolList*)malloc(sizeof(struct symbolList));
 		if(np==NULL)
 			return NULL;
@@ -64,7 +65,7 @@ struct symbolList* STSTO(char const* const symbolNameCharPtr, const int lcInt, c
 	np->lcValue = lcInt;
 	np->length=len;//datatype length
 	np->reloc=aRelocation;
-	printTimeToLog(); fprintf(logFile, "Symbol %s added to ST with LC = %d, length=%d, A/R=%c\n", np->symName, np->lcValue, np->length, ((np->reloc==REL)?('R'):('A')));
+	fprintf(logFile, "Symbol %s added to ST with LC = %d, length=%d, A/R=%c\n", np->symName, np->lcValue, np->length, ((np->reloc==REL)?('R'):('A')));
 	return np;
 }
 void deleteST(){
