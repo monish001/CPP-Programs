@@ -1,3 +1,4 @@
+//NfaToDfa.cpp
 #include<set>
 #include<map>
 set<int> _closure(int state, const int table[][4]){
