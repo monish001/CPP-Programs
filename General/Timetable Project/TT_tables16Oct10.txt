@@ -1,0 +1,102 @@
+CREATE TABLE department(
+code VARCHAR(10) PRIMARY KEY,
+name VARCHAR(50) UNIQUE
+);
+INSERT INTO department VALUES('BTESD', 'Biotechnology & Environment Sciences');
+INSERT INTO department VALUES('CHED','Chemical Engineering');
+INSERT INTO department VALUES('CED', 'Civil Engineering');
+INSERT INTO department VALUES('CSED', 'Computer Science & Engineering');
+INSERT INTO department VALUES('EIED', 'Electrical & Instrumentation Engineering');
+INSERT INTO department VALUES('ECED', 'Electronics & Communication Engineering');
+INSERT INTO department VALUES('MED', 'Mechanical Engineering Department');
+
+CREATE TABLE teacher(
+code CHAR(5) PRIMARY KEY,
+name VARCHAR(20),
+deptcode VARCHAR(10) REFERENCES department(code)
+);
+INSERT INTO teacher VALUES('AKU', 'Ajay Kumar', 'CSED');
+INSERT INTO teacher VALUES('AV' ,'Anil Vashisht', 'CSED');
+
+CREATE TABLE course(
+code CHAR(6) PRIMARY KEY,
+name VARCHAR(50)
+);
+INSERT INTO course VALUES('CS003', 'Object Oriented Programming');
+INSERT INTO course VALUES('CS013', 'Theory of Computation');
+INSERT INTO course VALUES('CS008', 'Computer Networks');
+INSERT INTO course VALUES('CS009', 'Data Base Management Systems');
+INSERT INTO course VALUES('CS011', 'Software Engineering');
+INSERT INTO course VALUES('EC007', 'Microprocessors');
+
+CREATE TABLE coursespecific(
+srno NUMBER(4) PRIMARY KEY,
+code CHAR(6) REFERENCES course(code),
+type CHAR(1) NOT NULL,
+slotperweek NUMBER(1),
+timeperslot NUMBER(3,2)
+);
+INSERT INTO coursespecific VALUES('1', 'CS003', 'L', 3, 1);
+INSERT INTO coursespecific VALUES('2', 'CS003', 'P', 1, 2);
+INSERT INTO coursespecific VALUES('3', 'CS009', 'L', 3, 1);
+
+CREATE TABLE degree(
+code VARCHAR(10) PRIMARY KEY,
+name VARCHAR(30) UNIQUE
+);
+INSERT INTO degree VALUES('BE','BE');
+INSERT INTO degree VALUES('ME','Masters in Engineering');
+
+CREATE TABLE batch(
+srno CHAR(6) PRIMARY KEY,
+degree VARCHAR(10) REFERENCES degree(code),
+year NUMBER(1),
+deptcode VARCHAR(10) REFERENCES department(code)
+);
+INSERT INTO batch VALUES('BECOE', 'BE', '3', 'CSED');
+
+CREATE TABLE section(
+srno CHAR(7) PRIMARY KEY,
+code NUMBER(1),
+batchsrno CHAR(6) REFERENCES batch(srno),
+strength NUMBER(3)
+);
+INSERT INTO section VALUES('BECOE1', 1, 'BECOE', 19);
+INSERT INTO section VALUES('BECOE2', 2, 'BECOE', 22);
+INSERT INTO section VALUES('BECOE3', 3, 'BECOE', 20);
+
+CREATE TABLE room(
+code CHAR(4),
+day CHAR(3),
+period NUMBER(2),
+capacity NUMBER(3),
+projector NUMBER(1),
+PRIMARY KEY(code, day, period)
+);
+INSERT INTO room VALUES('F102', 'Mon', 1, 158, 1);
+INSERT INTO room VALUES('F102', 'Mon', 2, 158, 1);
+INSERT INTO room VALUES('F102', 'Mon', 3, 158, 1);
+
+CREATE TABLE tc(
+tcode CHAR(3) REFERENCES teacher(code),
+ccode NUMBER(4) REFERENCES coursespecific(srno),
+projector NUMBER(1),
+PRIMARY KEY (tcode, ccode)
+);
+INSERT INTO tc VALUES('AV', 3, 1);
+
+CREATE TABLE cb(
+ccode NUMBER(6) REFERENCES course(code),
+batchsrno CHAR(6) REFERENCES batch(srno)
+);
+
+CREATE TABLE tscr(
+tcode CHAR(3) REFERENCES teacher(code),
+ccode NUMBER(4) REFERENCES coursespecific(srno),
+rcode CHAR(4),
+day CHAR(3),
+period NUMBER(2),
+sectionsrno CHAR(7) REFERENCES section(srno),
+(rcode,day,period) REFERENCES room(code, day, period),
+(tcode,ccode) REFERENCES tc(tcode, ccode)
+);

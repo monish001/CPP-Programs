@@ -1,0 +1,95 @@
+drop table batch;
+drop table section;
+drop table room;
+drop table teacher;
+drop table tt;
+drop table year;
+drop table degree;
+
+create table batch(
+id varchar(20) primary key
+);
+
+create table section(
+ID varchar(20) primary key
+);
+
+create table room(
+id varchar(20) primary key
+);
+
+create table Teacher(
+ID varchar(20) primary key
+);
+
+create table Degree(
+ID varchar(20) primary key
+);
+
+create table year(
+ID number(1) primary key
+);
+
+create table tt(
+batch_id varchar(20) references   batch(id) on delete cascade,
+room_id varchar(20) references    room(id) on delete cascade,
+section_id varchar(20) references section(id) on delete cascade,
+teacher_id varchar(20) references teacher(id) on delete cascade, 
+degree_id varchar(20) references  degree(id) on delete cascade, 
+year_id varchar(20) references    year(id) on delete cascade, 
+day number(1) check (day in(1,2,3,4,5)),
+period number(2) check (period in(1,2,3,4,5,6,7,8,9,10)),
+primary key(batch_id, room_id, section_id, teacher_id, degree_id, year_id day, period)
+);
+
+insert into teacher values('Prateek Bhatia');
+insert into teacher values('Varinder Singh');
+insert into teacher values('A101');
+
+insert into section values('CArchitecture');
+insert into section values('CS004');
+insert into section values('Operating System');
+
+insert into room values('D115');
+insert into room values('D116');
+insert into room values('CCCT Lab');
+
+insert into batch values('Coe');
+insert into batch values('Coe1');
+insert into batch values('Coe2');
+insert into batch values('Cset1');
+insert into batch values('Cset2');
+insert into batch values('Cset3');
+insert into batch values('Cset4');
+insert into batch values('Cset5');
+insert into batch values('Ece');
+
+insert into degree values('BE');
+insert into degree values('MCA');
+insert into degree values('ME');
+
+insert into year values(1);
+insert into year values(2);
+insert into year values(3);
+insert into year values(4);
+
+insert into tt values(
+'Coe',
+'CArchitecture',
+'D115',
+'Varinder Singh',
+'BE',
+2,
+2,
+1
+);
+insert into tt values(
+'Cset5',
+'Operating System',
+'CCCT Lab',
+'Prateek Bhatia',
+'MCA',
+3,
+1,
+1
+);

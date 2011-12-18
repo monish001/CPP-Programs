@@ -1,0 +1,72 @@
+drop table batch;
+drop table course;
+drop table room;
+drop table teacher;
+drop table tt;
+
+create table batch(id varchar2(20) primary key on delete cascade);
+
+create table course(
+ID varchar2(20) primary key, on delete cascade
+);
+
+create table room(
+id varchar2(20) primary key, on delete cascade
+);
+
+create table Teacher(
+ID varchar2(20) primary key, on delete cascade
+);
+
+create table tt(
+BID varchar2(20) references   batch(id),
+CID varchar2(20) references  course(id),
+RID varchar2(20) references    room(id),
+TID varchar2(20) references teacher(id), 
+day number(1) check (day in(1,2,3,4,5)),
+period number(2) check (period in(1,2,3,4,5,6,7,8,9)),
+primary key(tid, cid, bid, rid, day, period)
+unique(bid,day,period),
+--unique(cid,day,period) Cant we count it to be exactly 3 i.e. 3 lect. per week,
+unique(rid,day,period),
+unique(tid,day,period)
+);
+
+insert into teacher values('Prateek Bhatia');
+insert into teacher values('Varinder Singh');
+insert into teacher values('A101');
+
+insert into course values('CArchitecture');
+insert into course values('CS004');
+insert into course values('Operating System');
+
+insert into room values('D115');
+insert into room values('D116');
+insert into room values('CCCT Lab');
+
+insert into batch values('Coe');
+insert into batch values('Coe1');
+insert into batch values('Coe2');
+insert into batch values('Cset1');
+insert into batch values('Cset2');
+insert into batch values('Cset3');
+insert into batch values('Cset4');
+insert into batch values('Cset5');
+insert into batch values('Ece');
+
+insert into tt values(
+'CArchitecture',
+'Coe',
+'D115',
+'Varinder Singh',
+2,
+1
+);
+insert into tt values(
+'Operating System',
+'Cset5',
+'CCCT Lab',
+'Prateek Bhatia',
+1,
+1
+);
