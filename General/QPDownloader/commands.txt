@@ -1,3 +1,0 @@
-javac *.java
-
-jar cfm QP_Downloader.jar manifest.txt *.class temp.gif
