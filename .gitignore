@@ -4,3 +4,10 @@
 *.class
 *.out
 *.BAK
+
+# Project binaries
+bin
+
+# Code::Blocks auto-generated files
+*.depend
+*.layout
