@@ -45,10 +45,27 @@ bool isPower1(int A){
     }
     return getBitVec(vec, A);
 }
+bool isPower2(int A){
+    vector<int> nums;
+    //nums.push_back(1);
+    if(A==1){return true;}
+    int MAX_p = 30;
+    for(int p=2; p<=MAX_p; p++){
+        // as A**P < 2**31, max_A as follow
+        int MAX_a = pow(2, 31.0/p);
+        cout<<"MAX_a:"<<MAX_a<<" for p:"<<p<<endl;
+        for(int a=2; a<=MAX_a; a++){
+            long val = pow(a, p);
+            //nums.push_back();
+            if(val == A) return true;
+        }
+    }
+    return false;
+}
 int main(){
-cout<<"Int:"<<sizeof(int)<<endl;
-cout<<"Long:"<<sizeof(long)<<endl;
-cout<<"Long long"<<sizeof(long long)<<endl;
-    cout<<isPower1(26);
+    cout<<"Int:"<<sizeof(int)<<endl;
+    cout<<"Long:"<<sizeof(long)<<endl;
+    cout<<"Long long"<<sizeof(long long)<<endl;
+    cout<<isPower2(536870912);
     return 0;
 }
