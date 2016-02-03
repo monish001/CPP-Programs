@@ -50,28 +50,36 @@ class stack{
 int main() {
     stack stk;
     int numOfOps;
-    scanf("%d", &numOfOps);
-    string output = "";
+    scanf("%d\n", &numOfOps);
+    //cout<<"Num of ops: "<<numOfOps<<endl;
+    stringstream output;
 
     for(int index=0; index<numOfOps; index++){
-        char operation[5];
+        char operation[30];
         char PUSH[] = "push", POP[] = "pop", INC[] = "inc";
-        scanf("%s", operation);
-        if(operation[1] == 'u'){
+        //scanf("%[^\n]", operation);
+        gets(operation);
+        //cout<<"Operation: "<<operation<<endl;
+        if(operation[1] == 'u'){ // push
             int num;
-            scanf("%d", &num);
+            //scanf("%d", &num);
+            char * space = strchr(operation, ' ');
+            sscanf(space+1, "%d", &num);
             stk.push(num);
-        }else if(operation[1] == 'o'){
+            //cout<<"Num: "<< num<<endl;
+        }else if(operation[1] == 'o'){ // pop
             stk.pop();
-        }else if(operation[1] == 'n'){
+        }else if(operation[1] == 'n'){ // inc
             int elemCount, val;
-            scanf("%d%d", &elemCount, &val);
+            //scanf("%d%d", &elemCount, &val);
+            char * space = strchr(operation, ' ');
+            sscanf(space+1, "%d%d", &elemCount, &val);
+            //cout<<"Read:"<<elemCount<<val<<endl;
             stk.inc(elemCount, val);
         }
-        output += stk.peek();
-        output += "\n";
+        output << stk.peek() << "\n";
     }
-    cout<<output;
+    cout<<output.str();
 
     return 0;
 }
