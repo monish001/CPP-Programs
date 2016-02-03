@@ -3,6 +3,7 @@
 #include <vector>
 #include <sstream>
 #include <cstdio>
+#include <cstring>
 using namespace std;
 
 //std::ios_base::sync_with_stdio(false);
@@ -49,21 +50,22 @@ class stack{
 int main() {
     stack stk;
     int numOfOps;
-    cin>>numOfOps;
+    scanf("%d", &numOfOps);
     string output = "";
 
     for(int index=0; index<numOfOps; index++){
-        string operation;
-        cin>>operation;
-        if(operation == "push"){
+        char operation[5];
+        char PUSH[] = "push", POP[] = "pop", INC[] = "inc";
+        scanf("%s", operation);
+        if(operation[1] == 'u'){
             int num;
-            cin>>num;
+            scanf("%d", &num);
             stk.push(num);
-        }else if(operation == "pop"){
+        }else if(operation[1] == 'o'){
             stk.pop();
-        }else if(operation == "inc"){
+        }else if(operation[1] == 'n'){
             int elemCount, val;
-            cin>>elemCount>>val;
+            scanf("%d%d", &elemCount, &val);
             stk.inc(elemCount, val);
         }
         output += stk.peek();
