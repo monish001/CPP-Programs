@@ -10,9 +10,47 @@ bool isFull(const int result, const int sr, const int er, const int sc, const in
     }
     return result == (er-sr+1)*(ec-sc+1);
 }
+vector<vector<int> > getNumOnesInRowAtEachLocation(const vector<vector<int> > &mat, const int nRows, const int nCols){
+    vector<vector<int> > max_x(nRows, vector<int>(nCols, 0));
+    for(int ri=0; ri<nRows; ri++){
+        if(nCols > 0){
+            max_x[ri][nCols-1] = mat[ri][nCols-1];
+        }
+        for(int ci=nCols-2; ci>=0; ci--){
+            max_x[ri][ci] = mat[ri][ci] == 1 ? max_x[ri][ci+1] + 1 : 0;
+        }
+    }
+    return max_x;
+}
+void printVecVec(const vector<vector<int> > vecVec, const vector<vector<int> > vecVec2){
+    cout<<"Format: ri,ci:inputMatrix:nOnes"<<endl;
+    for(int index=0; index<vecVec.size(); index++){
+        for(int innerIndex=0; innerIndex<vecVec[index].size(); innerIndex++){
+            cout<<index<<","<<innerIndex<<":"<<vecVec[index][innerIndex]<<":"<<vecVec2[index][innerIndex]<<"\t";
+        }
+        cout<<endl;
+    }
+}
 int _maximalRectangle3(const vector<vector<int> > &mat, const int nRows, const int nCols){
-    vector<string> isAllOnes(nRows, string(nCols, 0));
-    return 1;
+    vector<vector<int> > max_x = getNumOnesInRowAtEachLocation(mat, nRows, nCols);
+//printVecVec(mat, max_x);
+    int result = 0;
+    for(int ci=0; ci<nCols; ci++){
+        for(int ri=0; ri<nRows; ri++){
+            int numOnes, curMaxArea;
+            if(nRows > 0){
+                curMaxArea = numOnes = max_x[ri][ci];
+            }
+
+            for(int iRi = ri+1; iRi<nRows; iRi++){
+                numOnes = min(numOnes, max_x[iRi][ci]);
+                curMaxArea = max(curMaxArea, numOnes * (iRi-ri+1));
+            }
+//cout<<"Area at "<<ri<<","<<ci<<":"<<curMaxArea<<endl;
+            result = max(result, curMaxArea);
+        }
+    }
+    return result;
 }
 int _maximalRectangle2(const vector<vector<int> > &mat, const int nRows, const int nCols) {
     //int result[nRows][nRows][nCols][nCols] = {0};
@@ -84,6 +122,7 @@ int maximalRectangle(vector<vector<int> > &mat) {
         return 0;
     }
     int nCols = mat[0].size();
+    return _maximalRectangle3(mat, nRows, nCols);
     return _maximalRectangle2(mat, nRows, nCols);
 
     // row start and end. Then col start and end indices.
@@ -93,59 +132,30 @@ int maximalRectangle(vector<vector<int> > &mat) {
 int main()
 {
     vector<vector<int> > mat;
-    vector<int> r1;
-    r1.push_back(1);
-    r1.push_back(1);
-    r1.push_back(1);
-    r1.push_back(1);
-    r1.push_back(1);
-    r1.push_back(1);
-    r1.push_back(0);
-    r1.push_back(1);
-    r1.push_back(1);
-    r1.push_back(1);
-    r1.push_back(1);
-    r1.push_back(1);
-    r1.push_back(1);
-    r1.push_back(1);
-    r1.push_back(1);
-    vector<int> r2;
-    r2.push_back(1);
-    r2.push_back(0);
-    r2.push_back(1);
-    r2.push_back(1);
-    r2.push_back(0);
-    r2.push_back(1);
-    r2.push_back(1);
-    r2.push_back(1);
-    r2.push_back(1);
-    r2.push_back(1);
-    r2.push_back(1);
-    r2.push_back(1);
-    r2.push_back(1);
-    r2.push_back(1);
-    r2.push_back(1);
-    r2.push_back(1);
-    vector<int> r3;
-    r3.push_back(1);
-    r3.push_back(1);
-    r3.push_back(1);
-    r3.push_back(1);
-    r3.push_back(1);
-    r3.push_back(1);
-    r3.push_back(1);
-    r3.push_back(1);
-    r3.push_back(1);
-    r3.push_back(1);
-    r3.push_back(1);
-    r3.push_back(1);
-    r3.push_back(1);
-    r3.push_back(1);
-    r3.push_back(1);
-    r3.push_back(1);
+    int arr1[] = {0, 0, 1, 0, 0, 0, 1, 0, 1};
+    vector<int> r1(arr1, arr1+sizeof(arr1)/sizeof(arr1[0]));
     mat.push_back(r1);
+    int arr2[] = {0, 1, 1, 0, 0, 0, 0, 0, 0};
+    vector<int> r2(arr2, arr2+sizeof(arr2)/sizeof(arr2[0]));
     mat.push_back(r2);
+    int arr3[] = {0, 0, 1, 0, 1, 0, 1, 0, 1};
+    vector<int> r3(arr3, arr3+sizeof(arr3)/sizeof(arr3[0]));
     mat.push_back(r3);
+    int arr4[] = {0, 1, 0, 0, 0, 1, 1, 0, 1};
+    vector<int> r4(arr4, arr4+sizeof(arr4)/sizeof(arr4[0]));
+    mat.push_back(r4);
+    int arr5[] = {0, 1, 0, 0, 0, 0, 1, 1, 1};
+    vector<int> r5(arr5, arr5+sizeof(arr5)/sizeof(arr5[0]));
+    mat.push_back(r5);
+    int arr6[] = {1, 0, 1, 1, 1, 0, 1, 1, 1};
+    vector<int> r6(arr6, arr6+sizeof(arr6)/sizeof(arr6[0]));
+    mat.push_back(r6);
+    int arr7[] = {1, 1, 1, 1, 0, 1, 1, 1, 1};
+    vector<int> r7(arr7, arr7+sizeof(arr7)/sizeof(arr7[0]));
+    mat.push_back(r7);
+    int arr8[] = {1, 1, 1, 0, 1, 0, 1, 0, 1};
+    vector<int> r8(arr8, arr8+sizeof(arr8)/sizeof(arr8[0]));
+    mat.push_back(r8);
     cout << maximalRectangle(mat) << endl;
     return 0;
 }
